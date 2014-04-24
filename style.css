@@ -1,0 +1,7 @@
+#adminmenu .toplevel_page_cointent .wp-menu-image img {
+	padding: 4px 0 0 4px;
+}
+#adminmenu .current.toplevel_page_cointent .wp-menu-image img {
+	padding: 4px 0 0 4px;
+	opacity: 1;
+}
