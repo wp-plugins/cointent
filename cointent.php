@@ -1,9 +1,9 @@
 <?php
 /**
- * Plugin Name: CoinTent Pay Per Article
+ * Plugin Name: CoinTent
  * Plugin URI: http://cointent.com
- * Description: CoinTent, digital wallet for microtransaction sales of content
- * Version: 1.3
+ * Description: CoinTent let’s you sell individual pieces of content for small amounts ($0.05-$1.00).  You choose what content to sell and how to sell it. We handle the rest.
+ * Version: 1.0
  * Author: CoinTent, Inc.
  * License: GPL2
  */

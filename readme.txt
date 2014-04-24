@@ -3,8 +3,8 @@ Contributors: gibboj
 Tags: access-control, braintree, content, content monetization,ecommerce, earn money, make money, micropayments, monetize, monetization, paywall,  pay per view, payment, payments, paywall, premium, premium content,restrict access, sell, sell content, sell digital goods,stripe, widget
 Version: 1.0
 Requires at least: 3.0.1
-Tested up to: 3.8.1
-Stable tag: trunk
+Tested up to: 3.9
+Stable tag: 1.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -48,30 +48,32 @@ We also use this tracking to make sure we don't have any bugs in the product, ch
 
 
 == Installation ==
+Checkout full documentation at : https://cointent.com/docs/wordpress
+
 1. Signup at https://cointent.com/p/signup
 1. Install the plugin to the wp-content/plugins folder
 1. Add your publisher ID to the admin panel
 1. Wrap content that you want or pick a category to gate
 	* For the shortcode
-		A Wordpress shortcode should be used to wrap text you want gated for pay
-		The format for this shortcode is:
+	A Wordpress shortcode should be used to wrap text you want gated for pay
+	The format for this shortcode is:
 
-			[cointent_lockedcontent] CONTENT HERE [/cointent_lockedcontent]
+	[cointent_lockedcontent] CONTENT HERE [/cointent_lockedcontent]
 
-			Optional Arguments:
-				title
-				:	 Header on the widget before the user buys your article
-				subtitle
-				:	A message you would like to display to the user
-				post_purchase_title
-				:	Header on the widget after the user buys your article
-				post_purchase_subtitle
-				:	A message you would like to display to the user after they have purchased
-				article_title
-				:	Title used for emails to the user, and for reference in CoinTent's system
-				image_url
-				:	Image to be displayed on the widget
-	* To pick a category, choose to include the category from the CoinTent admin
+	Optional Arguments:
+		title
+		:	 Header on the widget before the user buys your article
+		subtitle
+		:	A message you would like to display to the user
+		post_purchase_title
+		:	Header on the widget after the user buys your article
+		post_purchase_subtitle
+		:	A message you would like to display to the user after they have purchased
+		article_title
+		:	Title used for emails to the user, and for reference in CoinTent's system
+		image_url
+		:	Image to be displayed on the widget
+		* To pick a category, choose to include the category from the CoinTent admin
 
 
 == Screenshots ==
@@ -142,9 +144,14 @@ Yes in order to allow for content prices lower than a $1 users need to setup and
 Please email us at support@cointent.com we will fix it right away. Thanks for your help!
 
 == Changelog ==
+
+= 1.0 =
+* Release to Wordpress.org
+* Fixing some formatting, and trying out tagging/ stable release
+
 = 0.2 =
 * Added tracking for article gating - tracks the difference between gated articles viewed vs those that are not
-* Added time read widget in place of logo for "readTime" experimemnt
+* Added time read widget in place of logo for "readTime" experiment
 
 = 0.1 =
 * Added emergency failure message state
