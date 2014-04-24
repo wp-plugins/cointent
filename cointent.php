@@ -2,7 +2,7 @@
 /**
  * Plugin Name: CoinTent Pay Per Article
  * Plugin URI: http://cointent.com
- * Description: CoinTent, pay per article
+ * Description: CoinTent, digital wallet for microtransaction sales of content
  * Version: 1.3
  * Author: CoinTent, Inc.
  * License: GPL2
