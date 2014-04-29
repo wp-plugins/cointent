@@ -65,12 +65,50 @@ function cointent_general_settings() {
 							<div class="inside">
 							<p>Sandbox - This is a testing environment, no real payments will be processed, only use this if you have a dev or staging blog that isn't open to the public</p>
 							<p>Live - This is the setting you use to on your site when you are ready for real customers to pay real money!</p>
-								<input type="radio" id="ct_sandbox" name="Cointent[environment]" value="sandbox" <?php if ($options['environment'] ==  "sandbox" ) { echo "checked"; }?>/><label for="ct_sandbox">&nbsp;<?php _e( 'Sandbox - for testing only' ); ?></label><br>
+								<input type="radio" id="ct_sandbox" name="Cointent[environment]" disabled="disabled" value="sandbox" <?php if ($options['environment'] ==  "sandbox" ) { echo "checked"; }?>/><label for="ct_sandbox">&nbsp;<?php _e( 'Sandbox - for testing only' ); ?></label><br>
 								<input type="radio" id="ct_production" name="Cointent[environment]" value="production" <?php if ($options['environment'] ==  "production" ) { echo "checked"; }?>/><label for="ct_production">&nbsp;<?php _e( 'Live - for live payments' ); ?></label>
 							</div>
 						</div>
 					</div>
 				</div>
+
+				<div class="tp-section">
+					<div class="body">
+						<div class="postbox">
+							<h3><?php _e('View Type') ?> </h3>
+
+							<div class="inside">
+								
+								<input type="radio" id="ct_condensed" name="Cointent[view_type]" value="condensed" <?php if ($options['view_type'] ==  "condensed" ) { echo "checked"; }?>/><label for="ct_condensed">&nbsp;<?php _e( 'Condensed' ); ?></label><br>
+								<input type="radio" id="ct_full" name="Cointent[view_type]" value="full" <?php if ($options['view_type'] ==  "full" ) { echo "checked"; }?>/><label for="ct_full">&nbsp;<?php _e( 'Full' ); ?></label>
+								<p> Condensed </p>
+								<img src="<?php echo plugins_url('/images/widget_condensed.png', BASE_DIR); ?>">
+								<p> Full </p>
+								<img src="<?php echo plugins_url('/images/widget_full.png', BASE_DIR); ?>">
+							</div>
+						</div>
+					</div>
+				</div>
+
+
+				<div class="tp-section">
+					<div class="body">
+						<div class="postbox">
+							<h3><?php _e('Titles for Inside Widget') ?> </h3>
+
+							<div class="inside">
+								<p>In the above picture the title is "Read the complete post for $0.10" and the subtitle is "To access this premium post..."</p>
+								<p>You can have different messages to the user for before they buy and after than purchase. Messages are limited to 140 characters.</p>
+								<label for="ct_widget_title">&nbsp;<?php _e( 'Title Text - Before buying' ); ?></label><input type="text" id="ct_widget_title" name="Cointent[widget_title]" size="80" value="<?php echo $options['widget_title'];?>"/><br>
+								<label for="ct_widget_subtitle">&nbsp;<?php _e( 'Subtitle Text - Before buying' ); ?></label><input type="text" id="ct_widget_subtitle" name="Cointent[widget_subtitle]" size="80"  value="<?php echo $options['widget_subtitle'];?>"/><br>
+							
+								<label for="ct_widget_post_purchase_title">&nbsp;<?php _e( 'Title Text - After buying' ); ?></label><input type="text" id="ct_widget_post_purchase_title" name="Cointent[widget_post_purchase_title]" size="80" value="<?php echo $options['widget_post_purchase_title'];?>"/><br>
+								<label for="ct_widget_post_purchase_subtitle">&nbsp;<?php _e( 'Subtitle Text - After buying' ); ?></label><input type="text" id="ct_widget_post_purchase_subtitle" name="Cointent[widget_post_purchase_subtitle]" size="80"  value="<?php echo $options['widget_post_purchase_subtitle'];?>"/><br>
+							</div>
+						</div>
+					</div>
+				</div>
+
 
 				<div class="tp-section">
 

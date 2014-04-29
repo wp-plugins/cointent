@@ -1,10 +1,11 @@
 === CoinTent Pay Per Article ===
 Contributors: gibboj
 Tags: access-control, braintree, content, content monetization,ecommerce, earn money, make money, micropayments, monetize, monetization, paywall,  pay per view, payment, payments, paywall, premium, premium content,restrict access, sell, sell content, sell digital goods,stripe, widget
-Version: 1.0
+Version: 1.1
 Requires at least: 3.0.1
 Tested up to: 3.9
-Stable tag: 1.0
+Stable tag: 1.1
+>>>>>>> master
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -145,6 +146,15 @@ Please email us at support@cointent.com we will fix it right away. Thanks for yo
 
 == Changelog ==
 
+<<<<<<< HEAD
+=======
+= 1.1 = 
+* Fixed big bug with broke locking when using categories
+* Added condense and full widget view toggle to admin
+* Added default text fields to admin
+* Disabled Sandbox mode
+
+>>>>>>> master
 = 1.0 =
 * Release to Wordpress.org
 * Fixing some formatting, and trying out tagging/ stable release

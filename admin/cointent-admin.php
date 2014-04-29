@@ -30,7 +30,8 @@ function cointent_validate_settings($input) {
 	$result['publisher_id'] = intval($input['publisher_id']);
 	$result['environment'] = $input['environment'];
 	$result['cointent_tracking'] = (bool)$input['cointent_tracking'];
-
+	$result['view_type'] = $input['view_type'];
+	
 	if (isset($input['include_categories'])) {
 		$result['include_categories'] = $input['include_categories'];
 	} else {
@@ -43,6 +44,7 @@ function cointent_validate_settings($input) {
 		$result['exclude_categories'] = array();
 	}
 
+	/*CSS classes */
 	$result['widget_wrapper_prepurchase'] = (string)trim($input['widget_wrapper_prepurchase']);
 	if(!preg_match('/^[a-z0-9A-Z]{0,32}$/i', $result['widget_wrapper_prepurchase'])) {
 		$result['widget_wrapper_prepurchase'] = '';
@@ -52,6 +54,28 @@ function cointent_validate_settings($input) {
 	if(!preg_match('/^[a-z0-9A-Z]{0,32}$/i', $result['widget_wrapper_postpurchase'])) {
 		$result['widget_wrapper_postpurchase'] = '';
 	}
+	/*TITLES */
+
+	$result['widget_title'] = (string)trim($input['widget_title']);
+	if(!preg_match('/^[a-z0-9A-Z]{0,140}$/i', $result['widget_title'])) {
+		$result['widget_title'] = '';
+	}
+
+	$result['widget_subtitle'] = (string)trim($input['widget_subtitle']);
+	if(!preg_match('/^[a-z0-9A-Z]{0,140}$/i', $result['widget_subtitle'])) {
+		$result['widget_subtitle'] = '';
+	}
+
+	$result['widget_post_purchase_title'] = (string)trim($input['widget_post_purchase_title']);
+	if(!preg_match('/^[a-z0-9A-Z]{0,140}$/i', $result['widget_post_purchase_title'])) {
+		$result['widget_post_purchase_title'] = '';
+	}
+
+	$result['widget_post_purchase_subtitle'] = (string)trim($input['widget_post_purchase_subtitle']);
+	if(!preg_match('/^[a-z0-9A-Z]{0,140}$/i', $result['widget_post_purchase_subtitle'])) {
+		$result['widget_post_purchase_subtitle'] = '';
+	}
+
 
 	return $result;
 }

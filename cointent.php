@@ -57,7 +57,12 @@ if(!class_exists('cointent_class'))
 				'include_categories'=> array(),
 				'exclude_categories'=> array(),
 				'widget_wrapper_prepurchase' => '',
-				'widget_wrapper_postpurchase' => ''
+				'widget_wrapper_postpurchase' => '',
+				'widget_title' => 'Please purchase to continue reading this premium content',
+				'widget_subtitle' => '',
+				'widget_post_purchase_title' => 'Thanks for reading!',
+				'widget_post_purchase_subtitle' => '',
+				'view_type' => 'full'
 			);
 
 			update_option( 'Cointent', $default_options );
@@ -216,6 +221,12 @@ if(!class_exists('cointent_class'))
 			}
 
 			$wrapperClass = $hasCTaccess ? $options['widget_wrapper_postpurchase'] : $options['widget_wrapper_prepurchase'];
+		
+			$title = $title ? $title : $options['widget_title'];
+			$subtitle = $subtitle ? $subtitle : $options['widget_subtitle'];
+			$post_purchase_title = $post_purchase_title ? $post_purchase_title : $options['widget_post_purchase_title'];
+			$post_purchase_subtitle = $post_purchase_subtitle ? $post_purchase_subtitle : $options['widget_post_purchase_subtitle'];
+			$view_type = $view_type ? $view_type : $options['view_type'];
 
 			if ($wrapperClass) {
 				$widget_script = '<div class="'.$wrapperClass.'">';
@@ -395,23 +406,60 @@ if(!class_exists('cointent_class'))
 				$hasaccess = $this->cointent_has_access($_GET['email'], $_GET['token'], $_GET['time']);
 			}
 
-			// if they don't have access through cointent or its not gated by use,
-			// leave as is, either another plugin locked it or allowed it
-			if(!$hasaccess || !$isGated) {
+			$options = get_option('Cointent');
+
+			$view_type = $options['view_type'];
+			$subtitle = $options['widget_subtitle'];
+			$title = $options['widget_title'];
+			$widget_post_purchase_subtitle = $options['widget_post_purchase_subtitle'];
+			$widget_post_purchase_title = $options['widget_post_purchase_title'];
+			
+			
+			/********* START TP ONLY SECTION ************/
+			/* 
+			* //if they don't have access through cointent or its not gated by us,
+			* //leave as is, either another plugin locked it or allowed it
+			* if (!$hasaccess || !$isGated) { // USE THIS LINE IF SOMETHING ELSE IS GATING CONTENT ( LIKE PMP )
+			*	return do_shortcode($content);
+			* }
+			*/
+			/*********** End TP ONLY SECTION *************/
+
+			/********* THIS SECTION WILL NOT WORK WITH TECHPINION, IT DOES THE LOCKING TP depends on another plugin to do locking *********/
+			if ($hasaccess) {
+			
+				$content = $post->post_content;
+
+				$pos = strpos( $content, 'cointent_lockedcontent') ;
+				if ($pos <= 0) {
+					$content .= '[cointent_lockedcontent view_type="'.$view_type.'" title="'.$title.'" subtitle="'.$subtitle.'"'
+						.' post_purchase_title="'.$widget_post_purchase_title.'"'
+						.' post_purchase_subtitle="'.$widget_post_purchase_subtitle.'"]'
+						.'[/cointent_lockedcontent]';
+				}
+
 				return do_shortcode($content);
-			} else {
+			}
+			else if (!$isGated) {
+				return do_shortcode($content);
+			}
+			/********* END SECTION*********/ 
+			else {
 				if ($post->post_content)	{
 					//defined exerpt
+					
 					$content = $post->post_content;
 
 					$pos = strpos( $content, 'cointent_lockedcontent') ;
 
-					if($pos <= 0){
-						$content .= '[cointent_lockedcontent view_type="condensed" post_purchase_title="Thanks for reading!  You can use your remaining balance on other insider content."]
-						[/cointent_lockedcontent]';
+					if ($pos <= 0){
+					
+						$content  = substr($content, 0, 155)."... ";
+						$content .= '[cointent_lockedcontent view_type="'.$view_type.'" title="'.$title.'" subtitle="'.$subtitle.'"'
+									.' post_purchase_title="'.$widget_post_purchase_title.'"'
+									.' post_purchase_subtitle="'.$widget_post_purchase_subtitle.'"]'
+									.'[/cointent_lockedcontent]';
 					}
-
-					$content = wpautop($content);
 				}
 			}
 
