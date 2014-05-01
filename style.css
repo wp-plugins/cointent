@@ -5,3 +5,51 @@
 	padding: 4px 0 0 4px;
 	opacity: 1;
 }
+#cointent-admin {
+	margin-right: 20px;
+}
+#cointent-admin .intro {
+	width: 700px;
+	margin: 0 auto;
+	text-align: center;
+}
+#cointent-admin table {
+	border-spacing: 0;
+	width:100%;
+}
+#cointent-admin table.cointent_main_table > tbody > tr > td:first-child {
+	width:300px;
+	padding-right:30px;
+	border-right:1px solid #e6e6e6;
+}
+#cointent-admin td {
+	vertical-align: top;
+	padding:10px 20px;
+}
+
+
+#cointent-admin table.cointent_main_table > tbody > tr:nth-child(2n) {
+	background-color: white;
+}
+#cointent-admin table.cointent_main_table > tbody > tr:nth-child(2n+1) {
+
+}
+#cointent-admin tr {
+	border-top:1px solid #4B4B4B;
+}
+#cointent-admin tr:first-child {
+	border-top:0;
+}
+#cointent-admin h4 {
+
+	margin:0;
+	font-size: 14px;
+}
+#cointent-admin ul {
+
+	margin:0;
+	padding:0;
+}
+#cointent-admin .bold {
+	font-weight: bold;
+}
