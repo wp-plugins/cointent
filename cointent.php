@@ -3,7 +3,7 @@
  * Plugin Name: CoinTent
  * Plugin URI: http://cointent.com
  * Description: CoinTent let’s you sell individual pieces of content for small amounts ($0.05-$1.00).  You choose what content to sell and how to sell it. We handle the rest.
- * Version: 1.1.3
+ * Version: 1.1.4
  * Author: CoinTent, Inc.
  * License: GPL2
  */
@@ -50,6 +50,7 @@ if(!class_exists('cointent_class'))
 		 */
 		public static function cointent_activate() {
 			// DO upgrades/migrations if necessary
+
 			$default_options = array(
 				'publisher_id' => 0,
 				'environment' => 'production',
@@ -62,16 +63,19 @@ if(!class_exists('cointent_class'))
 				'widget_subtitle' => '',
 				'widget_post_purchase_title' => 'Thanks for reading!',
 				'widget_post_purchase_subtitle' => '',
-				'view_type' => 'full'
+				'view_type' => 'condensed'
 			);
-
-			update_option( 'Cointent', $default_options );
-
+			$options = get_option( 'Cointent', $default_options );
+			update_option('Cointent', $options);
 		}
 
-		public static function cointent_deactivate() {
+		public static function cointent_uninstall() {
 			// Remove info from DB on deactivate?
 			delete_option( 'Cointent' );
+		}
+		public static function cointent_deactivate() {
+			// Remove info from DB on deactivate?
+			// THings to
 		}
 
 		/**
@@ -238,6 +242,7 @@ if(!class_exists('cointent_class'))
 							data-article-title="'.$article_title.'"
 							data-title="'.$title.'"
 							data-time="'.$time.'"
+							data-url="'.get_permalink($post_id).'"
 							data-subtitle="'.$subtitle.'"
 							data-post-purchase-subtitle="'.$post_purchase_subtitle.'"
 							data-post-purchase-title="'.$post_purchase_title.'"
@@ -463,6 +468,8 @@ if(!class_exists('cointent_class'))
 				}
 			}
 
+			//echo do_shortcode('[cointent_lockedcontent]');
+			add_shortcode('cointent_lockedcontent', array(&$this, "cointent_widgetHandler"));
 			return do_shortcode($content);
 		}
 
@@ -546,7 +553,7 @@ if (class_exists('cointent_class'))
 	// Installation and uninstallation hooks
 	register_activation_hook(__FILE__, array('cointent_class', 'cointent_activate'));
 	register_deactivation_hook(__FILE__, array('cointent_class', 'cointent_deactivate'));
-
+	register_uninstall_hook(__FILE__, array('cointent_class', 'cointent_uninstall'));
 	// instantiate the plugin class
 	$cointent = new cointent_class();
 

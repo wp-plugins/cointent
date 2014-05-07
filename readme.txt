@@ -1,10 +1,10 @@
 === CoinTent Pay Per Article ===
 Contributors: gibboj
 Tags: access-control, braintree, content, content monetization,ecommerce, earn money, make money, micropayments, monetize, monetization, paywall,  pay per view, payment, payments, paywall, premium, premium content,restrict access, sell, sell content, sell digital goods,stripe, widget
-Version: 1.1.3
+Version: 1.1.4
 Requires at least: 3.0.1
 Tested up to: 3.9
-Stable tag: 1.1.3
+Stable tag: 1.1.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -88,7 +88,7 @@ Checkout full documentation at : https://cointent.com/docs/wordpress
 == Frequently Asked Questions ==
 
 = What is CoinTent? =
- CoinTent is a digital wallet service that allows publishers to sell individual pieces of content to consumers for small amounts (down to $0.05).
+CoinTent is a digital wallet service that allows consumers to painlessly purchase quality content for tiny prices (down to $0.05) without having to subscribe.
 
 = How does CoinTent work? =
 
@@ -144,6 +144,11 @@ Yes in order to allow for content prices lower than a $1 users need to setup and
 Please email us at support@cointent.com we will fix it right away. Thanks for your help!
 
 == Changelog ==
+
+= 1.1.4 =
+* Fixing issue that cleared the admin settings on upgrade
+* Changed the url that saves to the DB on article auto add to be the permalink instead of the window URL (which could be the front page or a category page)
+* Changed default view_type to be condensed
 
 = 1.1.3 =
 * Really not getting the hang of updating all the locations of the versions

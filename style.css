@@ -32,7 +32,7 @@
 	background-color: white;
 }
 #cointent-admin table.cointent_main_table > tbody > tr:nth-child(2n+1) {
-
+	background-color: #F7F7F7;
 }
 #cointent-admin tr {
 	border-top:1px solid #4B4B4B;
