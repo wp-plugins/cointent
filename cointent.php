@@ -3,7 +3,7 @@
  * Plugin Name: CoinTent
  * Plugin URI: http://cointent.com
  * Description: CoinTent let’s you sell individual pieces of content for small amounts ($0.05-$1.00).  You choose what content to sell and how to sell it. We handle the rest.
- * Version: 1.1.4
+ * Version: 1.1.5
  * Author: CoinTent, Inc.
  * License: GPL2
  */
@@ -34,6 +34,7 @@ if(!class_exists('cointent_class'))
 				// Handles loading the css for the widget
 				add_action('wp_enqueue_scripts', array(&$this, 'cointent_register_plugin_styles'));
 				add_filter('the_content', array(&$this, 'cointent_content_filter'), 20);
+				add_filter('the_excerpt', array(&$this,'cointent_content_remove_filter'),20 );
 				$options = get_option("Cointent");
 
 				if (isset($options['cointent_tracking']) && $options['cointent_tracking']) {
@@ -41,7 +42,7 @@ if(!class_exists('cointent_class'))
 					add_filter('the_content', array(&$this, 'cointent_post_stats'), 5);
 				}
 
-				add_filter('comment_text_rss', array(&$this, 'cointent_content_filter'), 5);
+			//	add_filter('comment_text_rss', array(&$this, 'cointent_content_filter'), 5);
 			}
 		}
 
@@ -149,7 +150,7 @@ if(!class_exists('cointent_class'))
 
 
 			$content = $hidden_content .$no_script . $widget_script;
-			return do_shortcode($content);
+			return do_shortcode(wpautop($content));
 		}
 		/**
 		 * Returns the no script notice
@@ -237,17 +238,16 @@ if(!class_exists('cointent_class'))
 			}
 
 			// Data fields to aid in the creation of the widget
-			$dataFields = 'data-publisher-id="'.$publisher_id.'"
-							data-article-id="'.$post_id.'"
-							data-article-title="'.$article_title.'"
-							data-title="'.$title.'"
-							data-time="'.$time.'"
-							data-url="'.get_permalink($post_id).'"
-							data-subtitle="'.$subtitle.'"
-							data-post-purchase-subtitle="'.$post_purchase_subtitle.'"
-							data-post-purchase-title="'.$post_purchase_title.'"
-							data-view-type="'.$view_type.'"
-							data-src="'.$image_url.'"';
+			$dataFields = 'data-publisher-id="'.$publisher_id.'" data-article-id="'.$post_id.'"'.
+							'data-article-title="'.$article_title.'"'.
+							'data-title="'.$title.'"'.
+							'data-time="'.$time.'"'.
+							'data-url="'.get_permalink($post_id).'"'.
+							'data-subtitle="'.$subtitle.'"'.
+							'data-post-purchase-subtitle="'.$post_purchase_subtitle.'"'.
+							'data-post-purchase-title="'.$post_purchase_title.'"'.
+							'data-view-type="'.$view_type.'"'.
+							'data-src="'.$image_url.'"';
 
 			// If the user has access or the script has already been loaded, don't load the script again
 
@@ -315,31 +315,31 @@ if(!class_exists('cointent_class'))
 		 */
 		function cointent_callAPI($method, $url, $data = false)
 		{
-		    $curl = curl_init();
+			$curl = curl_init();
 
-		    switch ($method)
-		    {
-		        case "POST":
-		            curl_setopt($curl, CURLOPT_POST, 1);
+			switch ($method)
+			{
+				case "POST":
+					curl_setopt($curl, CURLOPT_POST, 1);
 
-		            if ($data)
-		                curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
-		            break;
-		        case "PUT":
-		            curl_setopt($curl, CURLOPT_PUT, 1);
-		            break;
-		        default:
-		            if ($data) {
-		                $url = sprintf("%s?%s", $url, http_build_query($data));
-		            }
-		    }
+					if ($data)
+						curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
+					break;
+				case "PUT":
+					curl_setopt($curl, CURLOPT_PUT, 1);
+					break;
+				default:
+					if ($data) {
+						$url = sprintf("%s?%s", $url, http_build_query($data));
+					}
+			}
 
-		    // Optional Authentication:
-		    curl_setopt($curl, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
-		    curl_setopt($curl, CURLOPT_URL, $url);
-		    curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+			// Optional Authentication:
+			curl_setopt($curl, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+			curl_setopt($curl, CURLOPT_URL, $url);
+			curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
 
-		    return curl_exec($curl);
+			return curl_exec($curl);
 		}
 		/**
 		 * Determine whether post is gated based on include and exclude category settings
@@ -390,6 +390,12 @@ if(!class_exists('cointent_class'))
 
 			return $is_gated;
 		}
+
+		function cointent_content_remove_filter($content) {
+				remove_shortcode( 'cointent_lockedcontent' );
+				return $content;
+		}
+
 		/**
 		 * Filters the content for our shortcode, locks if necessary
 		 * @param  [type] $content [description]
@@ -437,6 +443,7 @@ if(!class_exists('cointent_class'))
 
 				$pos = strpos( $content, 'cointent_lockedcontent') ;
 				if ($pos <= 0) {
+					wpautop($content);
 					$content .= '[cointent_lockedcontent view_type="'.$view_type.'" title="'.$title.'" subtitle="'.$subtitle.'"'
 						.' post_purchase_title="'.$widget_post_purchase_title.'"'
 						.' post_purchase_subtitle="'.$widget_post_purchase_subtitle.'"]'
@@ -446,7 +453,7 @@ if(!class_exists('cointent_class'))
 				return do_shortcode($content);
 			}
 			else if (!$isGated) {
-				return do_shortcode($content);
+				return do_shortcode(wpautop($content));
 			}
 			/********* END SECTION*********/
 			else {
@@ -458,8 +465,20 @@ if(!class_exists('cointent_class'))
 					$pos = strpos( $content, 'cointent_lockedcontent') ;
 
 					if ($pos <= 0){
-
-						$content  = substr($content, 0, 155)."... ";
+						// Make short preview - pulled form wp_trim_excerpt
+						$content = strip_shortcodes( $content );
+						$content = str_replace(']]>', ']]&gt;', $content);
+						$content = strip_tags($content);
+						$excerpt_length = apply_filters('excerpt_length', 55);
+						$words = preg_split("/[\n\r\t ]+/", $content, $excerpt_length + 1, PREG_SPLIT_NO_EMPTY);
+						if ( count($words) > $excerpt_length ) {
+								array_pop($words);
+								$content = implode(' ', $words);
+								$content = $content . "... ";
+						} else {
+								$content = implode(' ', $words) . "... ";
+						}
+						wpautop($content);
 						$content .= '[cointent_lockedcontent view_type="'.$view_type.'" title="'.$title.'" subtitle="'.$subtitle.'"'
 									.' post_purchase_title="'.$widget_post_purchase_title.'"'
 									.' post_purchase_subtitle="'.$widget_post_purchase_subtitle.'"]'
@@ -468,7 +487,6 @@ if(!class_exists('cointent_class'))
 				}
 			}
 
-			//echo do_shortcode('[cointent_lockedcontent]');
 			add_shortcode('cointent_lockedcontent', array(&$this, "cointent_widgetHandler"));
 			return do_shortcode($content);
 		}

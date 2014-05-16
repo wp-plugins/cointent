@@ -52,8 +52,8 @@ function cointent_general_settings() {
 
 									<td>
 										<h4><?php _e('Locked Categories') ?> </h4>
-										<p>You can lock entire categories of posts, a short preview will automatically be shown to users and then the paywall								Include categories are categories that you want to have a paywall, include is overriden by exclude categories.</p>
-											Ex. Post A is categorized by "TV" and "Premium".</p>
+										<p>You can lock entire categories of posts, a short preview will automatically be shown to users, followed by the paywall. Include categories are categories that you want to have a paywall, include is overriden by exclude categories. Excluded categories will not be gated by a paywall. </p>
+											If you would like to lock individual posts check out our <a href="https://cointent.com/docs/js">documentation</a>.</p>
 									</td>
 									<td>
 										<table class="form-table">
@@ -101,10 +101,6 @@ function cointent_general_settings() {
 											</tbody>
 										</table>
 									</td>
-
-
-
-
 								</tr>
 								<tr>
 									<td>
@@ -149,10 +145,6 @@ function cointent_general_settings() {
 									<td>
 										<h4>View Type</h4>
 										<p> Checkout the different view options at our webpage <a href="https://cointent.com/docs/wordpress/views"></a></p>
-									<!--<p> Condensed </p>
-										<img src="<?php echo plugins_url('/images/widget_condensed.png', BASE_DIR); ?>">
-										<p> Full </p>
-										<img src="<?php echo plugins_url('/images/widget_full.png', BASE_DIR); ?>"> -->
 									</td>
 									<td>
 										<ul>
@@ -253,9 +245,6 @@ function cointent_general_settings() {
 						</div>
 					</div>
 				</div>
-
-
-
 			</form>
 		</div>
 	</div>
