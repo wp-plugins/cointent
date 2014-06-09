@@ -228,7 +228,7 @@ function cointent_general_settings() {
 									<td>
 										<ul>
 											<li>
-												<input type="radio" id="ct_sandbox" name="Cointent[environment]" disabled="disabled" value="sandbox" <?php if ($options['environment'] ==  "sandbox" ) { echo "checked"; }?>/>
+												<input type="radio" id="ct_sandbox" name="Cointent[environment]" value="sandbox" <?php if ($options['environment'] ==  "sandbox" ) { echo "checked"; }?>/>
 												<label for="ct_sandbox">&nbsp;<?php _e( 'Sandbox - for testing only' ); ?></label>
 											</li>
 											<li>

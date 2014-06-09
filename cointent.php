@@ -3,7 +3,7 @@
  * Plugin Name: CoinTent
  * Plugin URI: http://cointent.com
  * Description: CoinTent let’s you sell individual pieces of content for small amounts ($0.05-$1.00).  You choose what content to sell and how to sell it. We handle the rest.
- * Version: 1.1.5
+ * Version: 1.1.6
  * Author: CoinTent, Inc.
  * License: GPL2
  */
@@ -12,7 +12,7 @@ define("COINTENT_DIR", plugin_dir_path( __FILE__ ));
 define("BASE_DIR",  __FILE__ );
 
 define("COINTENT_PRODUCTION", 'connect.cointent.com');
-define("COINTENT_STAGING", 'connect.dev.cointent.com');
+define("COINTENT_SANDBOX", 'connect.sandbox.cointent.com');
 
 
 // Flag to show/hide the failure message for all shortcodes
@@ -140,7 +140,7 @@ if(!class_exists('cointent_class'))
 			}
 
 			// If the user has access or the script has already been loaded, don't load the script again
-			if ( ($hasCTaccess || isset($_GET['loadScript'])) && $content) {
+			if ( $hasCTaccess  && $content) {
 				// if there is content in the short code, hide it behind gating.
 				$hidden_content ='<div id="cointent_gated">'.$content.'</div>';
 			}
@@ -192,7 +192,7 @@ if(!class_exists('cointent_class'))
 			$base_url = COINTENT_PRODUCTION;
 
 			if ($environment == 'sandbox') {
-				$base_url = COINTENT_STAGING;
+				$base_url = COINTENT_SANDBOX;
 			}
 
 
@@ -296,7 +296,7 @@ if(!class_exists('cointent_class'))
 
 			$base_url = 'api.cointent.com';
 			if ($environment == 'sandbox') {
-				$base_url = 'api.dev.cointent.com';
+				$base_url = 'api.sandbox.cointent.com';
 			}
 			// Setup call to get gating information
 			$url  = 'https://'.$base_url."/gating/publisher/".$publisher_id."/article/".$post->ID;
@@ -450,7 +450,7 @@ if(!class_exists('cointent_class'))
 						.'[/cointent_lockedcontent]';
 				}
 
-				return do_shortcode($content);
+				return do_shortcode(wpautop($content));
 			}
 			else if (!$isGated) {
 				return do_shortcode(wpautop($content));
@@ -496,7 +496,7 @@ if(!class_exists('cointent_class'))
 			$environment =  $options['environment'];
 			$base_url = COINTENT_PRODUCTION;
 			if ($environment == 'sandbox') {
-				$base_url = COINTENT_STAGING;
+				$base_url = COINTENT_SANDBOX;
 			}
 
 			wp_register_script('main-cointent-js', '//'.$base_url.'/cointent.0.1.js');
@@ -528,7 +528,7 @@ if(!class_exists('cointent_class'))
 
 				$base_url = COINTENT_PRODUCTION;
 				if ($environment == 'sandbox') {
-					$base_url = COINTENT_STAGING;
+					$base_url = COINTENT_SANDBOX;
 				}
 				wp_enqueue_script('tracking-cointent-js','//'.$base_url.'/cointent-tracker.0.1.js');
 
@@ -550,7 +550,7 @@ if(!class_exists('cointent_class'))
 
 				$base_url = COINTENT_PRODUCTION;
 				if ($environment == 'sandbox') {
-					$base_url = COINTENT_STAGING;
+					$base_url = COINTENT_SANDBOX;
 				}
 
 				$isGated = $this->cointent_is_content_gated();
