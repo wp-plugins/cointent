@@ -1,6 +1,5 @@
 <?php
 function cointent_store_tracking_response() {
-	error_log("UPDATING OPTION are teher none???");
 	if ( !wp_verify_nonce( $_POST['nonce'], 'cointent_activate_tracking' ) )
 		die();
 

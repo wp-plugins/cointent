@@ -1,10 +1,10 @@
 === CoinTent Pay Per Article ===
 Contributors: gibboj
 Tags: access-control, braintree, content, content monetization,ecommerce, earn money, make money, micropayments, monetize, monetization, paywall,  pay per view, payment, payments, paywall, premium, premium content,restrict access, sell, sell content, sell digital goods,stripe, widget
-Version: 1.1.6
+Version: 1.1.7
 Requires at least: 3.8
 Tested up to: 3.9
-Stable tag: 1.1.6
+Stable tag: 1.1.7
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -14,7 +14,7 @@ The digital wallet that enables you to sell individual pieces of content.
 
 == Description ==
 
-CoinTent let’s you sell individual pieces of content for small amounts ($0.05-$1.00).  You choose what content to sell and how to sell it. We handle the rest.
+CoinTent lets you sell individual pieces of content for small amounts ($0.05-$1.00).  You choose what content to sell and how to sell it. We handle the rest.
 
 Start using CoinTent in 3 easy steps:
 1) Install the plugin
@@ -123,7 +123,7 @@ Here:  https://cointent.com/p/signup
 Yes, we need to track how much you charge for each of your articles, they default to $0.25 if you haven't picked a price. Here you can also view how much money you are making each day.  You can signup here: https://cointent.com/p/signup
 
 = What is the cost structure? =
-Publishers keep 75% of all money spent on their content.  The remaining percentage largely covers payment fees (which are often $0.30 +3% of the amount a user fills their wallet with), fraud protection, and security.
+Publishers keep 80% of all money spent on their content.  The remaining percentage largely covers payment fees (which are often $0.30 +3% of the amount a user fills their wallet with), fraud protection, and security.
 
 = How do I get paid? =
 To receive payment for your content sales, be sure to completely fill out your contact information on your account page.  Assuming your information is properly filled out, we will pay your account monthly by check as long as you have accumulated a minimum of $10.  If you have any questions on payments, please contact publishers@cointent.com.
@@ -144,6 +144,9 @@ Yes in order to allow for content prices lower than a $1 users need to setup and
 Please email us at support@cointent.com we will fix it right away. Thanks for your help!
 
 == Changelog ==
+
+= 1.1.7 =
+Fixed a admin display issue (wasn't showing widget before/after text)
 
 = 1.1.6 =
 Fixing spacing issues (not calling wpautop)

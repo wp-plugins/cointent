@@ -76,6 +76,5 @@ function cointent_validate_settings($input) {
 		$result['widget_post_purchase_subtitle'] = '';
 	}
 
-
 	return $result;
 }

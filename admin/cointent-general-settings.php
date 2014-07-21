@@ -167,19 +167,19 @@ function cointent_general_settings() {
 										<table>
 											<tr>
 												<td><label for="ct_widget_title">&nbsp;<?php _e( 'Title, Before Purchase' ); ?></label></td>
-												<td><textarea type="text" id="ct_widget_title" name="Cointent[widget_title]" cols="65" rows="3" value="<?php echo $options['widget_title'];?>"></textarea></td>
+												<td><textarea type="text" id="ct_widget_title" name="Cointent[widget_title]" cols="65" rows="3"><?php echo $options['widget_title'];?></textarea></td>
 											</tr>
 											<tr>
 												<td><label for="ct_widget_subtitle">&nbsp;<?php _e( 'Subtitle, Before Purchase' ); ?></label></td>
-												<td><textarea type="text" id="ct_widget_subtitle" name="Cointent[widget_subtitle]" cols="65" rows="3" value="<?php echo $options['widget_subtitle'];?>"></textarea></td>
+												<td><textarea type="text" id="ct_widget_subtitle" name="Cointent[widget_subtitle]" cols="65" rows="3" ><?php echo $options['widget_subtitle'];?></textarea></td>
 											</tr>
 											<tr>
 												<td><label for="ct_widget_post_purchase_title">&nbsp;<?php _e( 'Title, After Purchase' ); ?></label></td>
-												<td><textarea type="text" id="ct_widget_post_purchase_title" name="Cointent[widget_post_purchase_title]" cols="65" rows="3" value="<?php echo $options['widget_post_purchase_title'];?>"></textarea></td>
+												<td><textarea type="text" id="ct_widget_post_purchase_title" name="Cointent[widget_post_purchase_title]" cols="65" rows="3"><?php echo $options['widget_post_purchase_title'];?></textarea></td>
 											</tr>
 											<tr>
 												<td><label for="ct_widget_post_purchase_subtitle">&nbsp;<?php _e( 'Subtitle, After Purchase' ); ?></label></td>
-												<td><textarea type="text" id="ct_widget_post_purchase_subtitle" name="Cointent[widget_post_purchase_subtitle]" cols="65" rows="3" value="<?php echo $options['widget_post_purchase_subtitle'];?>"></textarea></td>
+												<td><textarea type="text" id="ct_widget_post_purchase_subtitle" name="Cointent[widget_post_purchase_subtitle]" cols="65" rows="3"><?php echo $options['widget_post_purchase_subtitle'];?></textarea></td>
 											</tr>
 										</table>
 									</td>
