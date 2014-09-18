@@ -1,10 +1,10 @@
 === CoinTent Pay Per Article ===
 Contributors: gibboj
 Tags: access-control, braintree, content, content monetization,ecommerce, earn money, make money, micropayments, monetize, monetization, paywall,  pay per view, payment, payments, paywall, premium, premium content,restrict access, sell, sell content, sell digital goods,stripe, widget
-Version: 1.1.7
+Version: 1.1.9
 Requires at least: 3.8
-Tested up to: 3.9
-Stable tag: 1.1.7
+Tested up to: 4.0
+Stable tag: 1.1.9
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -144,14 +144,21 @@ Yes in order to allow for content prices lower than a $1 users need to setup and
 Please email us at support@cointent.com we will fix it right away. Thanks for your help!
 
 == Changelog ==
+= 1.1.9 =
+* Adding in support for video tags
+
+= 1.1.8 =
+* Updated to show we work with 4.0
+* Removed cointent_response.js file, it is now included in cointent.0.1.js
+* Adjustable preview length, default is 55
 
 = 1.1.7 =
-Fixed a admin display issue (wasn't showing widget before/after text)
+* Fixed a admin display issue (wasn't showing widget before/after text)
 
 = 1.1.6 =
-Fixing spacing issues (not calling wpautop)
-Added Sandbox mode
-Fixed requires at least: to 3.8 (probably good until 3.6 but hasn't been tested)
+* Fixing spacing issues (not calling wpautop)
+* Added Sandbox mode
+* Fixed requires at least: to 3.8 (probably good until 3.6 but hasn't been tested)
 
 = 1.1.5 =
 * Fixing a problem with the shortcode being included in an excerpt (and failing when included)
@@ -196,8 +203,7 @@ Fixed requires at least: to 3.8 (probably good until 3.6 but hasn't been tested)
 * Prebuilt widget
 * Sell individual posts on WP
 
-
 == Upgrade Notice ==
-Still an issue with multiple posts on a single page, cointent_response.js not updating appropriately
+None
 
 

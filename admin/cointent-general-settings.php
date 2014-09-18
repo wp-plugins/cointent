@@ -114,6 +114,7 @@ function cointent_general_settings() {
 									</td>
 									<td>
 										<ul>
+
 											<li>
 												<input type="radio" id="ct_active" name="Cointent[cointent_tracking]" value="1" <?php if (isset($options['cointent_tracking']) && $options['cointent_tracking'] == true ) { echo "checked"; }?>/><label for="ct_tracking_active">&nbsp;<?php _e( 'Active' ); ?></label><br>
 											</li>
@@ -123,6 +124,22 @@ function cointent_general_settings() {
 											<li>
 												<input type="hidden" id="ct_tracking_popup" name="Cointent[tracking_popup]" value="<?php echo $options['tracking_popup'] ?>"/>
 											</li>
+										</ul>
+									</td>
+								</tr>
+								<tr>
+									<td>
+										<h4><?php _e('Show preview') ?> </h4>
+										<p class="bold">
+											How long (word count) do you want your preview (0 for no preview)  default is 55
+										 </p>
+									</td>
+									<td>
+										<ul>
+											<li>
+												<input type="text" id="ct_preview_count" name="Cointent[preview_count]" value="<?php echo $options['preview_count'];?>"/>
+											</li>
+
 										</ul>
 									</td>
 								</tr>

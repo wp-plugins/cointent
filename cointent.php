@@ -3,7 +3,7 @@
  * Plugin Name: CoinTent
  * Plugin URI: http://cointent.com
  * Description: CoinTent let’s you sell individual pieces of content for small amounts ($0.05-$1.00).  You choose what content to sell and how to sell it. We handle the rest.
- * Version: 1.1.7
+ * Version: 1.1.9
  * Author: CoinTent, Inc.
  * License: GPL2
  */
@@ -54,6 +54,7 @@ if(!class_exists('cointent_class'))
 
 			$default_options = array(
 				'publisher_id' => 0,
+				'preview_count' => 55,
 				'environment' => 'production',
 				'cointent_tracking' => false,
 				'include_categories'=> array(),
@@ -180,10 +181,9 @@ if(!class_exists('cointent_class'))
 				$content = $post->post_content;
 				$time = $this->cointent_getTimeToRead($content);
 			}
-			$post_id = get_the_ID();
+
 
 			$widget_script = '';
-			$response_script = '';
 
 			// Setup environment to point the plugin to
 			$options =  get_option('Cointent');
@@ -211,13 +211,21 @@ if(!class_exists('cointent_class'))
 			//   image_url 						-> Image to display on the widget
 
 			extract( shortcode_atts( array(
+				'media_type' => 'text',
 				'article_title' => '',
 				'title' => '',
 				'subtitle' => '',
 				'post_purchase_title' => '',
 				'post_purchase_subtitle' => '',
 				'view_type' => '',
-				'image_url' => ''
+				'video_id' => '',
+				'image_url' => '',
+				'video_src' => '',
+				'video_type' => '',
+				'video_width' => '640',
+				'video_height' => '360',
+				'video_poster' => 'https://kconnect.dev.cointent.com/images/default_poster.png'
+
 			), $atts, 'cointent_lockedcontent' ));
 
 			// If we don't have an article title use the one from the post
@@ -231,6 +239,18 @@ if(!class_exists('cointent_class'))
 			$subtitle = $subtitle ? $subtitle : $options['widget_subtitle'];
 			$post_purchase_title = $post_purchase_title ? $post_purchase_title : $options['widget_post_purchase_title'];
 			$post_purchase_subtitle = $post_purchase_subtitle ? $post_purchase_subtitle : $options['widget_post_purchase_subtitle'];
+
+
+			//
+			if ($media_type == '' || $media_type == 'text') {
+				$post_id = get_the_ID();
+				$cssClazz = 'widget';
+			} else {
+				$cssClazz = 'video';
+				$post_id = $video_id;
+			}
+
+
 			$view_type = $view_type ? $view_type : $options['view_type'];
 
 			if ($wrapperClass) {
@@ -249,12 +269,18 @@ if(!class_exists('cointent_class'))
 							'data-view-type="'.$view_type.'"'.
 							'data-src="'.$image_url.'"';
 
+			if ($media_type == 'video') {
+				$dataFields .= 'data-video-src="'.$video_src.'"'.
+					'data-video-type="'.$video_type.'"'.
+					'data-video-width="'.$video_width.'"'.
+					'data-video-height="'.$video_height.'"'.
+					'data-video-poster="'.$video_poster.'"'
+					;
+			}
 			// If the user has access or the script has already been loaded, don't load the script again
-
-			$widget_script .= '<div class="cointent-widget" '.$dataFields.'></div>';
+			$widget_script .= '<div class="cointent-'.$cssClazz.'" '.$dataFields.'></div>';
 			if (!$hasCTaccess && !isset($_GET['loadScript'])) {
 				wp_enqueue_script('main-cointent-js');
-				wp_enqueue_script('response-cointent-js');
 			}
 
 			// Close the wrapper
@@ -262,7 +288,7 @@ if(!class_exists('cointent_class'))
 				$widget_script .= '</div>';
 			}
 
-			$widget_script .= $response_script;
+
 			return $widget_script;
 		}
 
@@ -469,9 +495,11 @@ if(!class_exists('cointent_class'))
 						$content = strip_shortcodes( $content );
 						$content = str_replace(']]>', ']]&gt;', $content);
 						$content = strip_tags($content);
-						$excerpt_length = apply_filters('excerpt_length', 55);
+						$excerpt_length = $options['preview_count'];//apply_filters('excerpt_length', $options['preview_count']);
 						$words = preg_split("/[\n\r\t ]+/", $content, $excerpt_length + 1, PREG_SPLIT_NO_EMPTY);
-						if ( count($words) > $excerpt_length ) {
+						if ($excerpt_length == 0) {
+							$content = '';
+						} else if( count($words) > $excerpt_length ) {
 								array_pop($words);
 								$content = implode(' ', $words);
 								$content = $content . "... ";
@@ -500,13 +528,11 @@ if(!class_exists('cointent_class'))
 			}
 
 			wp_register_script('main-cointent-js', '//'.$base_url.'/cointent.0.1.js');
-			wp_register_script('response-cointent-js', '//'.$base_url.'/cointent_response.js');
 
 			$tracking_active = $options['cointent_tracking'];
 
 			if(!$tracking_active) {
 				wp_localize_script('main-cointent-js','cointent_tracking_data', array('tracking_inactive'=>true));
-				wp_localize_script('response-cointent-js','cointent_tracking_data', array('tracking_inactive'=>true));
 			}
 
 
@@ -531,7 +557,6 @@ if(!class_exists('cointent_class'))
 					$base_url = COINTENT_SANDBOX;
 				}
 				wp_enqueue_script('tracking-cointent-js','//'.$base_url.'/cointent-tracker.0.1.js');
-
 
 				wp_localize_script('tracking-cointent-js','cointent_tracking_data', array('publisherId'=>$publisher_id));
 			}
