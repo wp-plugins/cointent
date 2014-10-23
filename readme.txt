@@ -1,10 +1,10 @@
 === CoinTent Pay Per Article ===
 Contributors: gibboj
 Tags: access-control, braintree, content, content monetization,ecommerce, earn money, make money, micropayments, monetize, monetization, paywall,  pay per view, payment, payments, paywall, premium, premium content,restrict access, sell, sell content, sell digital goods,stripe, widget
-Version: 1.1.9
+Version: 1.1.10
 Requires at least: 3.8
 Tested up to: 4.0
-Stable tag: 1.1.9
+Stable tag: 1.1.10
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -144,6 +144,9 @@ Yes in order to allow for content prices lower than a $1 users need to setup and
 Please email us at support@cointent.com we will fix it right away. Thanks for your help!
 
 == Changelog ==
+= 1.1.10 =
+* Fix for PHP warning, post id variable not set
+
 = 1.1.9 =
 * Adding in support for video tags
 

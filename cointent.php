@@ -3,7 +3,7 @@
  * Plugin Name: CoinTent
  * Plugin URI: http://cointent.com
  * Description: CoinTent let’s you sell individual pieces of content for small amounts ($0.05-$1.00).  You choose what content to sell and how to sell it. We handle the rest.
- * Version: 1.1.9
+ * Version: 1.1.10
  * Author: CoinTent, Inc.
  * License: GPL2
  */
@@ -13,7 +13,8 @@ define("BASE_DIR",  __FILE__ );
 
 define("COINTENT_PRODUCTION", 'connect.cointent.com');
 define("COINTENT_SANDBOX", 'connect.sandbox.cointent.com');
-
+define("API_BASE_URL", 'api.cointent.com');
+define("SANDBOX_API_BASE_URL", 'api.sandbox.cointent.com');
 
 // Flag to show/hide the failure message for all shortcodes
 define("SHOW_FAILURE_MESSAGE", false);
@@ -187,7 +188,7 @@ if(!class_exists('cointent_class'))
 
 			// Setup environment to point the plugin to
 			$options =  get_option('Cointent');
-
+			$post_id = get_the_ID();
 			$environment =  $options['environment'];
 			$base_url = COINTENT_PRODUCTION;
 
@@ -240,10 +241,8 @@ if(!class_exists('cointent_class'))
 			$post_purchase_title = $post_purchase_title ? $post_purchase_title : $options['widget_post_purchase_title'];
 			$post_purchase_subtitle = $post_purchase_subtitle ? $post_purchase_subtitle : $options['widget_post_purchase_subtitle'];
 
-
-			//
 			if ($media_type == '' || $media_type == 'text') {
-				$post_id = get_the_ID();
+			//	$post_id = get_the_ID(); Set above
 				$cssClazz = 'widget';
 			} else {
 				$cssClazz = 'video';
@@ -281,6 +280,11 @@ if(!class_exists('cointent_class'))
 			$widget_script .= '<div class="cointent-'.$cssClazz.'" '.$dataFields.'></div>';
 			if (!$hasCTaccess && !isset($_GET['loadScript'])) {
 				wp_enqueue_script('main-cointent-js');
+				$tracking_active = $options['cointent_tracking'];
+				if($tracking_active) {
+					$data = array('articleId'=>$post_id, 'publisherId'=>$publisher_id, 'gated'=>true);
+					wp_localize_script('main-cointent-js','cointent_tracking_data', $data);
+				}
 			}
 
 			// Close the wrapper
@@ -297,7 +301,6 @@ if(!class_exists('cointent_class'))
 			$wordsPerMin = round(max(1, $wordsPerMin));
 			return $wordsPerMin;
 		}
-
 
 
 		function cointent_has_access($email = '', $token = '', $timestamp = 0) {
@@ -320,9 +323,9 @@ if(!class_exists('cointent_class'))
 			$publisher_id =  $options['publisher_id'];
 
 
-			$base_url = 'api.cointent.com';
+			$base_url = API_BASE_URL;
 			if ($environment == 'sandbox') {
-				$base_url = 'api.sandbox.cointent.com';
+				$base_url = SANDBOX_API_BASE_URL;
 			}
 			// Setup call to get gating information
 			$url  = 'https://'.$base_url."/gating/publisher/".$publisher_id."/article/".$post->ID;
@@ -527,7 +530,7 @@ if(!class_exists('cointent_class'))
 				$base_url = COINTENT_SANDBOX;
 			}
 
-			wp_register_script('main-cointent-js', '//'.$base_url.'/cointent.0.1.js');
+			wp_register_script('main-cointent-js', '//'.$base_url.'/cointent.0.2.js');
 
 			$tracking_active = $options['cointent_tracking'];
 
@@ -556,7 +559,7 @@ if(!class_exists('cointent_class'))
 				if ($environment == 'sandbox') {
 					$base_url = COINTENT_SANDBOX;
 				}
-				wp_enqueue_script('tracking-cointent-js','//'.$base_url.'/cointent-tracker.0.1.js');
+				wp_enqueue_script('tracking-cointent-js','//'.$base_url.'/cointent-tracker.0.2.js');
 
 				wp_localize_script('tracking-cointent-js','cointent_tracking_data', array('publisherId'=>$publisher_id));
 			}
@@ -579,7 +582,9 @@ if(!class_exists('cointent_class'))
 				}
 
 				$isGated = $this->cointent_is_content_gated();
-				wp_enqueue_script('tracking-cointent-js','//'.$base_url.'/cointent-tracker.0.1.js');
+				if(!$isGated) {
+					wp_enqueue_script('tracking-cointent-js','//'.$base_url.'/cointent-tracker.0.2.js');
+				}
 
 				$data = array('articleId'=>$GLOBALS['post']->ID, 'publisherId'=>$options['publisher_id'], 'gated'=>$isGated);
 				wp_localize_script('tracking-cointent-js','cointent_tracking_data', $data);
