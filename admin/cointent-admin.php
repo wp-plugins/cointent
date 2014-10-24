@@ -22,7 +22,6 @@ function cointent_register_settings() {
 	register_setting( 'cointent-settings-group', 'Cointent', 'cointent_validate_settings' );
 	wp_register_style('cointent-wp-plugin-admin', plugins_url('style.css', BASE_DIR) );
 	wp_enqueue_style('cointent-wp-plugin-admin');
-
 }
 
 function cointent_validate_settings($input) {
@@ -57,8 +56,8 @@ function cointent_validate_settings($input) {
 	if(!preg_match('/^[a-z0-9A-Z]{0,32}$/i', $result['widget_wrapper_postpurchase'])) {
 		$result['widget_wrapper_postpurchase'] = '';
 	}
-	/*TITLES */
 
+	/*TITLES */
 	$result['widget_title'] = (string)trim($input['widget_title']);
 	if(!preg_match('/^[a-z0-9A-Z]{0,140}$/i', $result['widget_title'])) {
 		$result['widget_title'] = '';

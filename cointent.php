@@ -3,7 +3,7 @@
  * Plugin Name: CoinTent
  * Plugin URI: http://cointent.com
  * Description: CoinTent let’s you sell individual pieces of content for small amounts ($0.05-$1.00).  You choose what content to sell and how to sell it. We handle the rest.
- * Version: 1.1.10
+ * Version: 1.2.0
  * Author: CoinTent, Inc.
  * License: GPL2
  */
@@ -39,11 +39,10 @@ if(!class_exists('cointent_class'))
 				$options = get_option("Cointent");
 
 				if (isset($options['cointent_tracking']) && $options['cointent_tracking']) {
-					add_action('get_header', array(&$this, "cointent_home_stats"), 5);
+				//	cointent_home_stats();
+					add_action('init', array(&$this, "cointent_home_stats"), 5);
 					add_filter('the_content', array(&$this, 'cointent_post_stats'), 5);
 				}
-
-			//	add_filter('comment_text_rss', array(&$this, 'cointent_content_filter'), 5);
 			}
 		}
 
@@ -281,9 +280,20 @@ if(!class_exists('cointent_class'))
 			if (!$hasCTaccess && !isset($_GET['loadScript'])) {
 				wp_enqueue_script('main-cointent-js');
 				$tracking_active = $options['cointent_tracking'];
-				if($tracking_active) {
-					$data = array('articleId'=>$post_id, 'publisherId'=>$publisher_id, 'gated'=>true);
+				if ($tracking_active) {
+					$data = array('publisherId'=>$publisher_id, 'gated'=>true);
+
+					if(!is_front_page()) {
+						$data['articleId'] = $post_id;
+					}
 					wp_localize_script('main-cointent-js','cointent_tracking_data', $data);
+					$isEnqueued = wp_script_is( 'tracking-cointent-js', 'enqueued' );
+					if ($isEnqueued) {
+						add_action('wp_print_scripts','dequeueTracking');
+
+						//wp_dequeue_script( 'tracking-cointent-js' );
+					}
+
 				}
 			}
 
@@ -294,6 +304,11 @@ if(!class_exists('cointent_class'))
 
 
 			return $widget_script;
+		}
+
+		function dequeueTracking () {
+			wp_dequeue_script( 'tracking-cointent-js' );
+			wp_deregister_script( 'tracking-cointent-js' );
 		}
 
 		function cointent_getTimeToRead($content) {
@@ -531,7 +546,7 @@ if(!class_exists('cointent_class'))
 			}
 
 			wp_register_script('main-cointent-js', '//'.$base_url.'/cointent.0.2.js');
-
+			wp_register_script('tracking-cointent-js', '//'.$base_url.'/cointent-tracker.0.2.js');
 			$tracking_active = $options['cointent_tracking'];
 
 			if(!$tracking_active) {
@@ -541,8 +556,7 @@ if(!class_exists('cointent_class'))
 
 			wp_register_style('cointent-wp-plugin', '//'.$base_url.'/style.css' );
 
-
-			wp_enqueue_script('tracking-cointent-js');
+		//	wp_enqueue_script('tracking-cointent-js');
 			wp_enqueue_style('cointent-wp-plugin');
 
 		}
@@ -559,7 +573,12 @@ if(!class_exists('cointent_class'))
 				if ($environment == 'sandbox') {
 					$base_url = COINTENT_SANDBOX;
 				}
-				wp_enqueue_script('tracking-cointent-js','//'.$base_url.'/cointent-tracker.0.2.js');
+
+				$isEnqueued = wp_script_is( 'main-cointent-js', 'enqueued' );
+				if (!$isEnqueued) {
+					wp_register_script( 'tracking-cointent-js', '//'.$base_url.'/cointent-tracker.0.2.js');
+					wp_enqueue_script('tracking-cointent-js');
+				}
 
 				wp_localize_script('tracking-cointent-js','cointent_tracking_data', array('publisherId'=>$publisher_id));
 			}
@@ -580,10 +599,12 @@ if(!class_exists('cointent_class'))
 				if ($environment == 'sandbox') {
 					$base_url = COINTENT_SANDBOX;
 				}
+				$isEnqueued = wp_script_is( 'main-cointent-js', 'enqueued' );
 
 				$isGated = $this->cointent_is_content_gated();
-				if(!$isGated) {
-					wp_enqueue_script('tracking-cointent-js','//'.$base_url.'/cointent-tracker.0.2.js');
+				if(!$isGated && !$isEnqueued) {
+					wp_register_script( 'tracking-cointent-js', '//'.$base_url.'/cointent-tracker.0.2.js');
+					wp_enqueue_script('tracking-cointent-js');
 				}
 
 				$data = array('articleId'=>$GLOBALS['post']->ID, 'publisherId'=>$options['publisher_id'], 'gated'=>$isGated);
