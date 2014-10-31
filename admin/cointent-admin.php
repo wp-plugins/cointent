@@ -59,22 +59,22 @@ function cointent_validate_settings($input) {
 
 	/*TITLES */
 	$result['widget_title'] = (string)trim($input['widget_title']);
-	if(!preg_match('/^[a-z0-9A-Z]{0,140}$/i', $result['widget_title'])) {
+	if(!preg_match('/^[a-z0-9A-Z\s!?._-]{0,140}$/i', $result['widget_title'])) {
 		$result['widget_title'] = '';
 	}
 
 	$result['widget_subtitle'] = (string)trim($input['widget_subtitle']);
-	if(!preg_match('/^[a-z0-9A-Z]{0,140}$/i', $result['widget_subtitle'])) {
+	if(!preg_match('/^[a-z0-9A-Z\s!?._-]{0,140}$/i', $result['widget_subtitle'])) {
 		$result['widget_subtitle'] = '';
 	}
 
 	$result['widget_post_purchase_title'] = (string)trim($input['widget_post_purchase_title']);
-	if(!preg_match('/^[a-z0-9A-Z]{0,140}$/i', $result['widget_post_purchase_title'])) {
+	if(!preg_match('/^[a-z0-9A-Z\s!?._-]{0,140}$/i', $result['widget_post_purchase_title'])) {
 		$result['widget_post_purchase_title'] = '';
 	}
 
 	$result['widget_post_purchase_subtitle'] = (string)trim($input['widget_post_purchase_subtitle']);
-	if(!preg_match('/^[a-z0-9A-Z]{0,140}$/i', $result['widget_post_purchase_subtitle'])) {
+	if(!preg_match('/^[a-z0-9A-Z\s!?._-]{0,140}$/i', $result['widget_post_purchase_subtitle'])) {
 		$result['widget_post_purchase_subtitle'] = '';
 	}
 

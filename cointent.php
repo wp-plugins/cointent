@@ -39,7 +39,7 @@ if(!class_exists('cointent_class'))
 				$options = get_option("Cointent");
 
 				if (isset($options['cointent_tracking']) && $options['cointent_tracking']) {
-				//	cointent_home_stats();
+					//	cointent_home_stats();
 					add_action('init', array(&$this, "cointent_home_stats"), 5);
 					add_filter('the_content', array(&$this, 'cointent_post_stats'), 5);
 				}
@@ -241,7 +241,7 @@ if(!class_exists('cointent_class'))
 			$post_purchase_subtitle = $post_purchase_subtitle ? $post_purchase_subtitle : $options['widget_post_purchase_subtitle'];
 
 			if ($media_type == '' || $media_type == 'text') {
-			//	$post_id = get_the_ID(); Set above
+				//	$post_id = get_the_ID(); Set above
 				$cssClazz = 'widget';
 			} else {
 				$cssClazz = 'video';
@@ -257,15 +257,15 @@ if(!class_exists('cointent_class'))
 
 			// Data fields to aid in the creation of the widget
 			$dataFields = 'data-publisher-id="'.$publisher_id.'" data-article-id="'.$post_id.'"'.
-							'data-article-title="'.$article_title.'"'.
-							'data-title="'.$title.'"'.
-							'data-time="'.$time.'"'.
-							'data-url="'.get_permalink($post_id).'"'.
-							'data-subtitle="'.$subtitle.'"'.
-							'data-post-purchase-subtitle="'.$post_purchase_subtitle.'"'.
-							'data-post-purchase-title="'.$post_purchase_title.'"'.
-							'data-view-type="'.$view_type.'"'.
-							'data-src="'.$image_url.'"';
+				'data-article-title="'.$article_title.'"'.
+				'data-title="'.$title.'"'.
+				'data-time="'.$time.'"'.
+				'data-url="'.get_permalink($post_id).'"'.
+				'data-subtitle="'.$subtitle.'"'.
+				'data-post-purchase-subtitle="'.$post_purchase_subtitle.'"'.
+				'data-post-purchase-title="'.$post_purchase_title.'"'.
+				'data-view-type="'.$view_type.'"'.
+				'data-src="'.$image_url.'"';
 
 			if ($media_type == 'video') {
 				$dataFields .= 'data-video-src="'.$video_src.'"'.
@@ -273,7 +273,7 @@ if(!class_exists('cointent_class'))
 					'data-video-width="'.$video_width.'"'.
 					'data-video-height="'.$video_height.'"'.
 					'data-video-poster="'.$video_poster.'"'
-					;
+				;
 			}
 			// If the user has access or the script has already been loaded, don't load the script again
 			$widget_script .= '<div class="cointent-'.$cssClazz.'" '.$dataFields.'></div>';
@@ -436,8 +436,8 @@ if(!class_exists('cointent_class'))
 		}
 
 		function cointent_content_remove_filter($content) {
-				remove_shortcode( 'cointent_lockedcontent' );
-				return $content;
+			remove_shortcode( 'cointent_lockedcontent' );
+			return $content;
 		}
 
 		/**
@@ -483,21 +483,21 @@ if(!class_exists('cointent_class'))
 			/********* THIS SECTION WILL NOT WORK WITH TECHPINION, IT DOES THE LOCKING TP depends on another plugin to do locking *********/
 			if ($hasaccess) {
 
-				$content = $post->post_content;
+				//$content = $post->post_content;
 
 				$pos = strpos( $content, 'cointent_lockedcontent') ;
 				if ($pos <= 0) {
-					wpautop($content);
+
 					$content .= '[cointent_lockedcontent view_type="'.$view_type.'" title="'.$title.'" subtitle="'.$subtitle.'"'
 						.' post_purchase_title="'.$widget_post_purchase_title.'"'
 						.' post_purchase_subtitle="'.$widget_post_purchase_subtitle.'"]'
 						.'[/cointent_lockedcontent]';
 				}
 
-				return do_shortcode(wpautop($content));
+				return do_shortcode($content);
 			}
 			else if (!$isGated) {
-				return do_shortcode(wpautop($content));
+				return do_shortcode($content);
 			}
 			/********* END SECTION*********/
 			else {
@@ -510,25 +510,28 @@ if(!class_exists('cointent_class'))
 
 					if ($pos <= 0){
 						// Make short preview - pulled form wp_trim_excerpt
-						$content = strip_shortcodes( $content );
-						$content = str_replace(']]>', ']]&gt;', $content);
-						$content = strip_tags($content);
-						$excerpt_length = $options['preview_count'];//apply_filters('excerpt_length', $options['preview_count']);
-						$words = preg_split("/[\n\r\t ]+/", $content, $excerpt_length + 1, PREG_SPLIT_NO_EMPTY);
-						if ($excerpt_length == 0) {
-							$content = '';
-						} else if( count($words) > $excerpt_length ) {
-								array_pop($words);
-								$content = implode(' ', $words);
-								$content = $content . "... ";
-						} else {
-								$content = implode(' ', $words) . "... ";
+						// IF THE MORE TAG EXISTS use that as breaking
+						$morestring = '<!--more-->';
+						$explode_content = explode( $morestring, $post->post_content );
+						if (isset($explode_content[0]) && isset($explode_content[1])) {
+							$content = $explode_content[0];
 						}
-						wpautop($content);
+						// ELSE use default word count
+						else {
+							$wordAndPosition = str_word_count($content, 2);
+							$arraySlice = array_slice($wordAndPosition, $options['preview_count'], 1,true);
+							reset($arraySlice);
+							$indexToSplit = key($arraySlice);
+							$content = substr($content, 0,$indexToSplit )."...";
+
+
+						}
+
+						$content = wpautop($content);
 						$content .= '[cointent_lockedcontent view_type="'.$view_type.'" title="'.$title.'" subtitle="'.$subtitle.'"'
-									.' post_purchase_title="'.$widget_post_purchase_title.'"'
-									.' post_purchase_subtitle="'.$widget_post_purchase_subtitle.'"]'
-									.'[/cointent_lockedcontent]';
+							.' post_purchase_title="'.$widget_post_purchase_title.'"'
+							.' post_purchase_subtitle="'.$widget_post_purchase_subtitle.'"]'
+							.'[/cointent_lockedcontent]';
 					}
 				}
 			}
@@ -556,7 +559,6 @@ if(!class_exists('cointent_class'))
 
 			wp_register_style('cointent-wp-plugin', '//'.$base_url.'/style.css' );
 
-		//	wp_enqueue_script('tracking-cointent-js');
 			wp_enqueue_style('cointent-wp-plugin');
 
 		}
