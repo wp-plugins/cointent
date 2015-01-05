@@ -49,6 +49,15 @@ function cointent_general_settings() {
 									</td>
 								</tr>
 								<tr>
+									<td>
+										<h4>Publisher Token</h4>
+										<p>Signup to get a publisher token <a target="_blank" href="https://cointent.com/p/signup">here.</a> </p>
+									</td>
+									<td>
+										<input type="text" id="ct_publisher_token" name="Cointent[publisher_token]" value="<?php echo $options['publisher_token'];?>"/>
+									</td>
+								</tr>
+								<tr>
 
 									<td>
 										<h4><?php _e('Locked Categories') ?> </h4>

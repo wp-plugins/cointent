@@ -29,7 +29,7 @@ function cointent_validate_settings($input) {
 	$result['publisher_id'] = intval($input['publisher_id']);
 	$result['preview_count'] = intval($input['preview_count']);
 
-
+	$result['publisher_token'] = $input['publisher_token'];
 	$result['environment'] = $input['environment'];
 	$result['cointent_tracking'] = (bool)$input['cointent_tracking'];
 	$result['view_type'] = $input['view_type'];

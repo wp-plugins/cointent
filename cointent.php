@@ -3,7 +3,7 @@
  * Plugin Name: CoinTent
  * Plugin URI: http://cointent.com
  * Description: CoinTent let’s you sell individual pieces of content for small amounts ($0.05-$1.00).  You choose what content to sell and how to sell it. We handle the rest.
- * Version: 1.2.1
+ * Version: 1.3.0
  * Author: CoinTent, Inc.
  * License: GPL2
  */
@@ -18,7 +18,6 @@ define("SANDBOX_API_BASE_URL", 'api.sandbox.cointent.com');
 
 // Flag to show/hide the failure message for all shortcodes
 define("SHOW_FAILURE_MESSAGE", false);
-
 
 
 if(!class_exists('cointent_class'))
@@ -137,7 +136,9 @@ if(!class_exists('cointent_class'))
 				}
 				$hasCTaccess = !$isGated;
 			} else {
-				$hasCTaccess = $this->cointent_has_access($_GET['email'], $_GET['token'], $_GET['time']);
+				$email = isset($_GET['email']) ? $_GET['email'] : '';
+				$uid = isset($_GET['uid']) ?  $_GET['uid'] : '';
+				$hasCTaccess = $this->cointent_has_access($email, $uid, $_GET['token'], $_GET['time']);
 			}
 
 			// If the user has access or the script has already been loaded, don't load the script again
@@ -317,8 +318,8 @@ if(!class_exists('cointent_class'))
 			return $wordsPerMin;
 		}
 
+		function cointent_has_access($email = '', $uid = '', $token = '', $timestamp = 0) {
 
-		function cointent_has_access($email = '', $token = '', $timestamp = 0) {
 			global $post;
 
 			// If we don't gate they have access
@@ -328,6 +329,7 @@ if(!class_exists('cointent_class'))
 
 			$params = array(
 				"email" => $email,
+				"uid" => $uid,
 				"token" => $token,
 				"time" => $timestamp
 			);
@@ -347,7 +349,7 @@ if(!class_exists('cointent_class'))
 
 			$postResult = $this->cointent_callAPI('GET', $url, $params);
 
-			if ($postResult ) {
+			if ($postResult) {
 				$result = json_decode($postResult);
 				return $result->gating->access;
 			}
@@ -450,7 +452,8 @@ if(!class_exists('cointent_class'))
 			global $post;
 			$hasaccess = false;
 			$isGated = true;
-			if(!isset($_GET['email']) || !isset($_GET['token']) || !isset($_GET['time'])) {
+			if( (!isset($_GET['email']) && !isset($_GET['uid'])) || !isset($_GET['token']) || !isset($_GET['time'])) {
+
 				// Not enough info to do check
 				$isGated = $this->cointent_is_content_gated();
 				if (!$isGated) {
@@ -458,7 +461,11 @@ if(!class_exists('cointent_class'))
 				}
 
 			} else {
-				$hasaccess = $this->cointent_has_access($_GET['email'], $_GET['token'], $_GET['time']);
+
+				$email = isset($_GET['email']) ? $_GET['email'] : '';
+				$uid = isset($_GET['uid']) ?  $_GET['uid'] : '';
+				$hasaccess = $this->cointent_has_access($email, $uid, $_GET['token'], $_GET['time']);
+
 			}
 
 			$options = get_option('Cointent');
@@ -523,8 +530,6 @@ if(!class_exists('cointent_class'))
 							reset($arraySlice);
 							$indexToSplit = key($arraySlice);
 							$content = substr($content, 0,$indexToSplit )."...";
-
-
 						}
 
 						$content = wpautop($content);
