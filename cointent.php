@@ -129,7 +129,7 @@ if(!class_exists('cointent_class'))
 
 			// If you have been passed authentication information check to see if the user has
 			// purchased the content, if you don't just check to see if the content is gated by cointent or not
-			if(!isset($_GET['email']) || !isset($_GET['token']) || !isset($_GET['time'])) {
+			if( (!isset($_GET['email']) && !isset($_GET['uid'])) || !isset($_GET['token']) || !isset($_GET['time'])) {
 				$isGated = $this->cointent_is_content_gated();
 				// If not gated, don't change the content and return
 				if (!$isGated) {
@@ -217,8 +217,10 @@ if(!class_exists('cointent_class'))
 				'article_title' => '',
 				'title' => '',
 				'subtitle' => '',
+				'subtitle_2' => '',
 				'post_purchase_title' => '',
 				'post_purchase_subtitle' => '',
+				'post_purchase_subtitle_2' => '',
 				'view_type' => '',
 				'video_id' => '',
 				'image_url' => '',
@@ -405,7 +407,7 @@ if(!class_exists('cointent_class'))
 			// If they aren't set make sure we at least have an array to go through
 			$activeCategories = $activeCategories ? $activeCategories : array();
 			$inactiveCategories = $inactiveCategories ? $inactiveCategories : array();
-			if (has_shortcode($post->post_content, 'cointent_lockedcontent') || strpos($post->post_content, '[cointent_lockedcontent]') !== false) {
+			if (has_shortcode($post->post_content, 'cointent_lockedcontent') || strpos($post->post_content, '[cointent_lockedcontent') !== false || strpos($post->post_content,'class="cointent-widget"')  !== false) {
 				return true;
 			}
 			//for these post types, we want to check the parent
