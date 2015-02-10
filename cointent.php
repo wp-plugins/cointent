@@ -3,7 +3,7 @@
  * Plugin Name: CoinTent
  * Plugin URI: http://cointent.com
  * Description: CoinTent let’s you sell individual pieces of content for small amounts ($0.05-$1.00).  You choose what content to sell and how to sell it. We handle the rest.
- * Version: 1.3.1
+ * Version: 1.3.2
  * Author: CoinTent, Inc.
  * License: GPL2
  */
@@ -29,11 +29,12 @@ if(!class_exists('cointent_class'))
 			if (is_admin()) {
 				require_once COINTENT_DIR . '/admin/cointent-admin.php';
 			} else {
-				add_shortcode('cointent_lockedcontent', array(&$this, "cointent_widgetHandler"));
+				add_filter('the_content', array(&$this, 'cointent_content_filter'), 20);
+			//	add_shortcode('cointent_lockedcontent', array(&$this, "cointent_widgetHandler"));
 				add_shortcode('cointent_extras', array(&$this, "cointent_extrasHandler"));
 				// Handles loading the css for the widget
 				add_action('wp_enqueue_scripts', array(&$this, 'cointent_register_plugin_styles'));
-				add_filter('the_content', array(&$this, 'cointent_content_filter'), 20);
+
 				add_filter('the_excerpt', array(&$this,'cointent_content_remove_filter'),20 );
 				$options = get_option("Cointent");
 
@@ -291,10 +292,7 @@ if(!class_exists('cointent_class'))
 					$isEnqueued = wp_script_is( 'tracking-cointent-js', 'enqueued' );
 					if ($isEnqueued) {
 						add_action('wp_print_scripts','dequeueTracking');
-
-						//wp_dequeue_script( 'tracking-cointent-js' );
 					}
-
 				}
 			}
 
@@ -302,7 +300,6 @@ if(!class_exists('cointent_class'))
 			if ($wrapperClass) {
 				$widget_script .= '</div>';
 			}
-
 
 			return $widget_script;
 		}
@@ -408,7 +405,7 @@ if(!class_exists('cointent_class'))
 			// If they aren't set make sure we at least have an array to go through
 			$activeCategories = $activeCategories ? $activeCategories : array();
 			$inactiveCategories = $inactiveCategories ? $inactiveCategories : array();
-			if (has_shortcode($post->post_content, 'cointent_lockedcontent')) {
+			if (has_shortcode($post->post_content, 'cointent_lockedcontent') || strpos($post->post_content, '[cointent_lockedcontent]') !== false) {
 				return true;
 			}
 			//for these post types, we want to check the parent
@@ -429,6 +426,7 @@ if(!class_exists('cointent_class'))
 				// if the post matches any, return "gated"
 				foreach($post_categories as $cat) {
 					if (array_key_exists($cat, $activeCategories)) {
+						error_log('Correct category ');
 						$is_gated = true;
 					}
 				}
@@ -468,6 +466,7 @@ if(!class_exists('cointent_class'))
 
 			}
 
+			add_shortcode('cointent_lockedcontent', array(&$this, "cointent_widgetHandler"));
 			$options = get_option('Cointent');
 
 			$view_type = $options['view_type'];
@@ -526,10 +525,14 @@ if(!class_exists('cointent_class'))
 						// ELSE use default word count
 						else {
 							$wordAndPosition = str_word_count($content, 2);
-							$arraySlice = array_slice($wordAndPosition, $options['preview_count'], 1,true);
-							reset($arraySlice);
-							$indexToSplit = key($arraySlice);
-							$content = substr($content, 0,$indexToSplit )."...";
+							$length = $options['preview_count'];
+							if (count($wordAndPosition) - 1 < $options['preview_count']) {
+								$length = count($wordAndPosition) - 1;
+							}
+							$arraySlice = array_slice($wordAndPosition, $length, 1, true);
+							$lastWord = reset($arraySlice);
+							$indexToSplit = key($arraySlice) + strlen($lastWord);
+							$content = substr($content, 0, $indexToSplit+1 )."...";
 						}
 
 						$content = wpautop($content);
@@ -541,7 +544,6 @@ if(!class_exists('cointent_class'))
 				}
 			}
 
-			add_shortcode('cointent_lockedcontent', array(&$this, "cointent_widgetHandler"));
 			return do_shortcode($content);
 		}
 
@@ -563,7 +565,6 @@ if(!class_exists('cointent_class'))
 
 
 			wp_register_style('cointent-wp-plugin', '//'.$base_url.'/style.css' );
-
 			wp_enqueue_style('cointent-wp-plugin');
 
 		}

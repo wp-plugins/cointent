@@ -1,10 +1,10 @@
 === CoinTent Pay Per Article ===
 Contributors: gibboj
 Tags: access-control, braintree, content, content monetization,ecommerce, earn money, make money, micropayments, monetize, monetization, paywall,  pay per view, payment, payments, paywall, premium, premium content,restrict access, sell, sell content, sell digital goods,stripe, widget
-Version: 1.3.1
+Version: 1.3.2
 Requires at least: 3.8
 Tested up to: 4.0
-Stable tag: 1.3.1
+Stable tag: 1.3.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -144,6 +144,10 @@ Yes in order to allow for content prices lower than a $1 users need to setup and
 Please email us at support@cointent.com we will fix it right away. Thanks for your help!
 
 == Changelog ==
+= 1.3.2 =
+* Fixes to shortcode (duplicate widget on unlock)
+* Fixes to preview length code (had some edge cases)
+
 = 1.3.1 =
 * Bump bc of issue with tagging on svn (1.2.1 was tagged as 1.3.0)
 
