@@ -1,44 +1,52 @@
-=== CoinTent Pay Per Article ===
-Contributors: gibboj
-Tags: access-control, braintree, content, content monetization,ecommerce, earn money, make money, micropayments, monetize, monetization, paywall,  pay per view, payment, payments, paywall, premium, premium content,restrict access, sell, sell content, sell digital goods,stripe, widget
+=== CoinTent Paywall, Subscriptions and Microtransactions ===
+Contributors: cointent
+Tags: access-control, braintree, content, content monetization, ecommerce, earn money, make money, micropayments, monetize, monetization, paywall, pay per view, payment, payments, paywall, premium, premium content,restrict access, sell, sell content, sell digital goods,stripe, widget
 Version: 1.3.2
 Requires at least: 3.8
-Tested up to: 4.0
+Tested up to: 4.1
 Stable tag: 1.3.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Content monetization for the digital age
-
-The digital wallet that enables you to sell individual pieces of content.
+We can help you sell your articles, picture and other content in today's digital age with subscriptions, limited access passes and micro-payments!
 
 == Description ==
 
-CoinTent lets you sell individual pieces of content for small amounts ($0.05-$1.00).  You choose what content to sell and how to sell it. We handle the rest.
+CoinTent helps you earn money from the great content you are already puttin on your website. You choose what content to sell and how to sell it. We handle the paywall, processing the payments, and gathering the data you need to improve your site. This plugin will help you sell your content with traditional subscriptions, limited time access, or microtransactions. All payment information is stored securely, to make future purchases one click away.
 
-Start using CoinTent in 3 easy steps:
-1) Install the plugin
-2) Choose which posts to sell
-3) Choose how much to sell them for
-
-* Premium Content - Select what to sell. Pick your price.
-
+* Premium Content - Pick your price. Pick how you want to sell it.
+* Analytics - Find out what your readers want. See graphs your sales, user funnels, and viewers, export your data to csv for further analysis.
 * Customize - Easy, customizable, and flexible integration. Create a premium purchase experience that works with your brand.
-
 * Secure and Easy Payment - We focus on security and privacy in handling payments, fraud, customer service and account management.
 
-Wallet Optimized for Micropayments
+####Services
+#####Subscriptions
+>Give users access to all the premium content on your site with monthly and yearly subscriptions. Head to [cointent.com](https://cointent.com/p/account) to setup your subscription plans and prices.
+
+#####Micro-transactions
+>Sell your content as individual pieces. Don't discourage new comers with a large upfront cost, sell your content to your burgeoning readership post by post. Microtransactions give readers a way to try out your premium content before they are ready to commit. Checkout out Cointent's settings in the Wordpress Admin panel to add paywalls to a category of your posts.
+
+#####Limited Time Access
+>Do you provide tools? Ever updating content on a single page? Limited time access may be the best way to sell your content. Users pay for a day
+
+#####Wallet
+Cointent uses a digital wallet to make micropayments and daily passes possible. The wallet provides:
+
 * Increases revenue and payer engagement.
 * Specialize in selling content from $0.05-$1.00.
 * Consumers fund their wallet up front which helps lower credit card fees.
 * Consumers are more likely to make multiple purchases versus one off payments
 
-For an example please see:
+=Examples=
+Microtransactions:
+[http://techpinions.com](http://techpinions.com/how-microsoft-could-hijack-android/28587)
 
-http://techpinions.com/how-microsoft-could-hijack-android/28587
-http://donnadubinsky.com/2014/01/28/a-kodak-moment/
+Subscriptions + Microtransaction:
+[http://donnadubinsky.com](http://donnadubinsky.com/2014/01/28/a-kodak-moment/)
+Subscriptions + Limited Time Access
+[http://razzball.com](http://razzball.com/dfsbot-dfs3-hit)
 
-For more on CoinTent, visit cointent.com
+For more on CoinTent, visit [cointent.com](https://cointent.com)
 
 Reader Tracking
 
@@ -46,36 +54,19 @@ Help us improve the reader's experience by turning on anonymous reader tracking.
 
 We also use this tracking to make sure we don't have any bugs in the product, changes in the numbers help us see bugs even before they are reported to get them fixed ASAP.  We don't use this data to sell to anyone else, it is used to make our product the best it can be and to help your business.
 
+Features:
+Payment Processors: braintree, stripe, paypal
+We provide: Monthly and Yearly Subscriptions, Limited Time Access Paywalls, Micro-payments for individual pieces of content, a digital wallet shared across the web to make purchasing your content easier. 
 
 == Installation ==
-Checkout full documentation at : https://cointent.com/docs/wordpress
-
-1. Signup at https://cointent.com/p/signup
+ 
+1. Signup with CoinTent [here](https://cointent.com/p/signup)
 1. Install the plugin to the wp-content/plugins folder
 1. Add your publisher ID to the admin panel
-1. Wrap content that you want or pick a category to gate
-	* For the shortcode
-	A Wordpress shortcode should be used to wrap text you want gated for pay
-	The format for this shortcode is:
-
-	[cointent_lockedcontent] CONTENT HERE [/cointent_lockedcontent]
-
-	Optional Arguments:
-		title
-		:	 Header on the widget before the user buys your article
-		subtitle
-		:	A message you would like to display to the user
-		post_purchase_title
-		:	Header on the widget after the user buys your article
-		post_purchase_subtitle
-		:	A message you would like to display to the user after they have purchased
-		article_title
-		:	Title used for emails to the user, and for reference in CoinTent's system
-		image_url
-		:	Image to be displayed on the widget
-		* To pick a category, choose to include the category from the CoinTent admin
-
-
+1. Pick a category to gate
+	
+	For more options and customizations checkout the full [documentation here](https://cointent.com/docs/wordpress)
+	
 == Screenshots ==
 
 1. The CoinTent widget integrated into a blog check out http://donnadubinsky.com/2014/01/28/a-kodak-moment/ to see it in action
@@ -88,11 +79,11 @@ Checkout full documentation at : https://cointent.com/docs/wordpress
 == Frequently Asked Questions ==
 
 = What is CoinTent? =
-CoinTent is a digital wallet service that allows consumers to painlessly purchase quality content for tiny prices (down to $0.05) without having to subscribe.
+CoinTent is a digital wallet service that allows publisher to sell content how they want to, Subscriptions, Limited Access Pass, or a la carte for prices as low as $0.05
 
 = How does CoinTent work? =
 
-Publishers integrate the CoinTent plugin and determine what content to sell and how much to sell it for.  This displays the button that allows users to pay for content.  To purchase content, end consumers with an account can purchase content with one click.  End consumers without an account can sign-up for an account and fund their wallet while staying on your website, and then continue to purchase content.
+Publishers integrate the CoinTent plugin and determine at what price and how they want to sell their content.  This displays the button that allows users to pay for content.  To purchase content, end consumers with an account can purchase content with one click.  End consumers without an account can sign-up for an account and fund their wallet while staying on your website, and then continue to purchase content.
 
 = What does the plugin handle? =
 
@@ -141,12 +132,15 @@ Yes, in order for us to enable content prices lower than a $1.00 we need users t
 Yes in order to allow for content prices lower than a $1 users need to setup and fund a wallet. They can signup and manage their account here: https://cointent.com/u/signup
 
 = I found a bug in the plugin. =
-Please email us at support@cointent.com we will fix it right away. Thanks for your help!
+Please email us at <support@cointent.com> we will fix it right away. Thanks for your help!
 
 == Changelog ==
 = 1.3.2 =
 * Fixes to shortcode (duplicate widget on unlock)
 * Fixes to preview length code (had some edge cases)
+* Updating descriptions of plugin to include new daily pass and subscription offerings
+* Fixes regression on unlocking of content
+* Fixes manual shortcode double vision
 
 = 1.3.1 =
 * Bump bc of issue with tagging on svn (1.2.1 was tagged as 1.3.0)
@@ -226,5 +220,3 @@ Please email us at support@cointent.com we will fix it right away. Thanks for yo
 
 == Upgrade Notice ==
 None
-
-
