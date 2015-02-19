@@ -33,6 +33,7 @@ function cointent_validate_settings($input) {
 	$result['environment'] = $input['environment'];
 	$result['cointent_tracking'] = (bool)$input['cointent_tracking'];
 	$result['view_type'] = $input['view_type'];
+	$result['reload_full_page'] = intval($input['reload_full_page']);
 
 	if (isset($input['include_categories'])) {
 		$result['include_categories'] = $input['include_categories'];

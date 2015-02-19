@@ -1,10 +1,10 @@
-=== CoinTent Paywall, Subscriptions and Microtransactions ===
+=== CoinTent ===
 Contributors: cointent
 Tags: access-control, braintree, content, content monetization, ecommerce, earn money, make money, micropayments, monetize, monetization, paywall, pay per view, payment, payments, paywall, premium, premium content,restrict access, sell, sell content, sell digital goods,stripe, widget
-Version: 1.3.2
+Version: 1.3.3
 Requires at least: 3.8
 Tested up to: 4.1
-Stable tag: 1.3.2
+Stable tag: 1.3.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -37,7 +37,7 @@ Cointent uses a digital wallet to make micropayments and daily passes possible. 
 * Consumers fund their wallet up front which helps lower credit card fees.
 * Consumers are more likely to make multiple purchases versus one off payments
 
-=Examples=
+= Examples =
 Microtransactions:
 [http://techpinions.com](http://techpinions.com/how-microsoft-could-hijack-android/28587)
 
@@ -64,6 +64,7 @@ We provide: Monthly and Yearly Subscriptions, Limited Time Access Paywalls, Micr
 1. Install the plugin to the wp-content/plugins folder
 1. Add your publisher ID to the admin panel
 1. Pick a category to gate
+1. You are done! Check out your new paywall.
 	
 	For more options and customizations checkout the full [documentation here](https://cointent.com/docs/wordpress)
 	
@@ -71,70 +72,63 @@ We provide: Monthly and Yearly Subscriptions, Limited Time Access Paywalls, Micr
 
 1. The CoinTent widget integrated into a blog check out http://donnadubinsky.com/2014/01/28/a-kodak-moment/ to see it in action
 
-2. The CoinTent widget on mobile displayed before purchase
+2. The CoinTent setup account page. This is how the user creates an account to pay for content via day passes or micropayments.
 
-3. The CoinTent widget on mobile after purchase
+3. The CoinTent subscription signup page. This is how the user creates an account to subscribe to your website.
+
+4. The unlocked content, and unlocked CoinTent widget.
 
 
 == Frequently Asked Questions ==
 
 = What is CoinTent? =
-CoinTent is a digital wallet service that allows publisher to sell content how they want to, Subscriptions, Limited Access Pass, or a la carte for prices as low as $0.05
+CoinTent is a digital wallet service that allows publisher to sell content how they want to. Publisher can select to sell via subscriptions, limited-access passes, or a la carte for prices as low as $0.05
 
 = How does CoinTent work? =
-
 Publishers integrate the CoinTent plugin and determine at what price and how they want to sell their content.  This displays the button that allows users to pay for content.  To purchase content, end consumers with an account can purchase content with one click.  End consumers without an account can sign-up for an account and fund their wallet while staying on your website, and then continue to purchase content.
 
 = What does the plugin handle? =
+The plugin adds a paywall to the premium posts. Clicking the purchase button in the paywall handles the user setting up an account, funding that account, buying the article and saving their purchase history.
 
-The plugin adds a widget to any post that you choose and the handles the user setting up an account, funding that account, buying the article and saving their purchase history.
-
-= How do I integrate it? =
-Check out our step-by-step guide at https://cointent.com/docs/wordpress or email support@cointent.com for more help
+= How do I integrate the CoinTent plugin? =
+Check out our [step-by-step guide](https://cointent.com/docs/wordpress) or email <support@cointent.com> for more help
 
 = What content can I sell? =
-You can sell any content (articles/blog posts/videos etc.).  Just wrap the content you want to hide in the cointent_lockedcontent shortcode and put a preview or description before it to show your users before they buy.  More info available here: https://cointent.com/docs/wordpress
+You can sell any content (articles/blog posts/videos etc.).  Just wrap the content you want to hide in the cointent_lockedcontent shortcode. Any content before the more tag will. More infoormation is available [here](https://cointent.com/docs/wordpress)
 
 = How do I make an article available for sale. =
-You can either pick a Wordpress category and make all of that category for sale or you can add the CoinTent shortcode to the article you want to sell
+You can either pick a Wordpress category and make all of that category for sale or you can add the CoinTent shortcode to the article you want to sell. More infoormation is available [here](https://cointent.com/docs/wordpress)
 
-= Can I choose the prices? =
-Yes the prices are defaulted to $0.25 and can be changed at https://cointent.com/p/account
+= Can I choose the price of each of my articles? =
+Yes the prices are defaulted to $0.25 and can be changed on your [account page](https://cointent.com/p/account).
 
-= Can I see stats on how it is performing? =
-Yes you can login at https://cointent.com/p/account to see your revenue, in total, by top articles for the last 7, 30, 60 or 90 days
+= Do you provide analytics? =
+Yes. You can login at to your [publisher account](https://cointent.com/p/account) to see your revenue, in total, by top articles, user funnels. We are conintually adding more analytics and data visualizations. 
 
-= Do I need a CoinTent publisher Account? =
-Yes, we need to know what site you are on, allow you to set your prices, monitor your sales, agree to the publisher terms of service, and contact you for your pay information.  You can signup here: https://cointent.com/p/signup
+= Do I need a CoinTent Publisher Account? =
+Yes, we need to know how to pay you! Also in your account you can set prices for your articles, monitor your sales, and contact you for your pay information. A publisher account also allows us to keep you informed of our terms of service. You can signup [here](https://cointent.com/p/signup)
 
-= How do I sign-up? =
-Here:  https://cointent.com/p/signup
-
-= Do I need a CoinTent Account? =
-Yes, we need to track how much you charge for each of your articles, they default to $0.25 if you haven't picked a price. Here you can also view how much money you are making each day.  You can signup here: https://cointent.com/p/signup
+ they default to $0.25 if you haven't picked a price. Here you can also view how much money you are making each day.  You can signup here https://cointent.com/p/signup
 
 = What is the cost structure? =
 Publishers keep 80% of all money spent on their content.  The remaining percentage largely covers payment fees (which are often $0.30 +3% of the amount a user fills their wallet with), fraud protection, and security.
 
 = How do I get paid? =
-To receive payment for your content sales, be sure to completely fill out your contact information on your account page.  Assuming your information is properly filled out, we will pay your account monthly by check as long as you have accumulated a minimum of $10.  If you have any questions on payments, please contact publishers@cointent.com.
-
+To receive payment for your sales, be sure to completely fill out your contact information on your account page.  When your information is properly filled out, we will pay your account monthly by check as long as you have accumulated a minimum of $10.  If you have any questions on payments, please contact <publishers@cointent.com>.
 
 = What payment methods does it allow? =
-We currently allow users to fill their wallets with Credit Card and will soon support PayPal.
-
-
-= Do my readers need to create a CoinTent Account? =
-Yes, in order for us to enable content prices lower than a $1.00 we need users to setup and fund a wallet. They can signup and manage their account here: https://cointent.com/u/signup
-
+We currently allow users to fill their wallets with all major credit cards and PayPal.
 
 = Do my readers need to create a CoinTent Account? =
-Yes in order to allow for content prices lower than a $1 users need to setup and fund a wallet. They can signup and manage their account here: https://cointent.com/u/signup
+Yes. This way we can remember which articles your readers have purchased, and bill them for subscriptions. The wallet also allows you to set prices lower than a $1. They can signup and manage their account [here](https://cointent.com/u/signup)
 
 = I found a bug in the plugin. =
 Please email us at <support@cointent.com> we will fix it right away. Thanks for your help!
 
 == Changelog ==
+= 1.3.3 =
+* Option to reload full page to catch JS files added via other plugins. If you lock another plugin's shortcode via the CoinTent plugin, it should now work, with this option active
+
 = 1.3.2 =
 * Fixes to shortcode (duplicate widget on unlock)
 * Fixes to preview length code (had some edge cases)
@@ -150,7 +144,7 @@ Please email us at <support@cointent.com> we will fix it right away. Thanks for 
 
 = 1.2.1 =
 * Removing wpautop from cointent the_content callback (was causing issues with JS inline in the body)
-* You can now use <!--more--> to decide where your preview ends
+* You can now use the "more" tag to decide where your preview ends
 * Fixed formatting not available in default preview (cutoff by word count)
 
 = 1.2.0 =

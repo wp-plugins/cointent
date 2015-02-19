@@ -3,7 +3,7 @@
  * Plugin Name: CoinTent
  * Plugin URI: http://cointent.com
  * Description: CoinTent let’s you sell individual pieces of content for small amounts ($0.05-$1.00).  You choose what content to sell and how to sell it. We handle the rest.
- * Version: 1.3.2
+ * Version: 1.3.3
  * Author: CoinTent, Inc.
  * License: GPL2
  */
@@ -24,13 +24,14 @@ if(!class_exists('cointent_class'))
 {
 	class cointent_class {
 		const WORDS_PER_MINUTE = 200;
+		public $scripts = array();
 		public function __construct() {
 			// Setup admin for cointent
 			if (is_admin()) {
 				require_once COINTENT_DIR . '/admin/cointent-admin.php';
 			} else {
-				add_filter('the_content', array(&$this, 'cointent_content_filter'), 20);
-			//	add_shortcode('cointent_lockedcontent', array(&$this, "cointent_widgetHandler"));
+				add_filter('the_content', array(&$this, 'cointent_content_filter'), 9);
+			//	add_filter('the_content', array(&$this, 'cointent_javascript_sweep'), 1000);
 				add_shortcode('cointent_extras', array(&$this, "cointent_extrasHandler"));
 				// Handles loading the css for the widget
 				add_action('wp_enqueue_scripts', array(&$this, 'cointent_register_plugin_styles'));
@@ -45,7 +46,17 @@ if(!class_exists('cointent_class'))
 				}
 			}
 		}
+		public function cointent_javascript_sweep($content) {
+			global $wp_scripts;
+			$printed = array_merge($wp_scripts->queue, $wp_scripts->done);
+			$scriptsWe = array_diff($printed, $this->scripts);
 
+			foreach ($scriptsWe  as $id=>$s){
+				$wp_scripts->print_scripts($s);
+			}
+
+			return $content;
+		}
 		/**
 		 * Activates the Cointent plugin and does any necessary upgrades and check compatibility
 		 */
@@ -153,7 +164,8 @@ if(!class_exists('cointent_class'))
 
 
 			$content = $hidden_content .$no_script . $widget_script;
-			return do_shortcode(wpautop($content));
+
+			return wpautop(do_shortcode($content));
 		}
 		/**
 		 * Returns the no script notice
@@ -183,7 +195,6 @@ if(!class_exists('cointent_class'))
 				$content = $post->post_content;
 				$time = $this->cointent_getTimeToRead($content);
 			}
-
 
 			$widget_script = '';
 
@@ -228,7 +239,8 @@ if(!class_exists('cointent_class'))
 				'video_type' => '',
 				'video_width' => '640',
 				'video_height' => '360',
-				'video_poster' => 'https://kconnect.dev.cointent.com/images/default_poster.png'
+				'video_poster' => 'https://kconnect.dev.cointent.com/images/default_poster.png',
+				'reload_full_page' => false
 
 			), $atts, 'cointent_lockedcontent' ));
 
@@ -241,6 +253,7 @@ if(!class_exists('cointent_class'))
 
 			$title = $title ? $title : $options['widget_title'];
 			$subtitle = $subtitle ? $subtitle : $options['widget_subtitle'];
+			$reload_full_page = $options['reload_full_page'] ? true : false;
 			$post_purchase_title = $post_purchase_title ? $post_purchase_title : $options['widget_post_purchase_title'];
 			$post_purchase_subtitle = $post_purchase_subtitle ? $post_purchase_subtitle : $options['widget_post_purchase_subtitle'];
 
@@ -269,6 +282,7 @@ if(!class_exists('cointent_class'))
 				'data-post-purchase-subtitle="'.$post_purchase_subtitle.'"'.
 				'data-post-purchase-title="'.$post_purchase_title.'"'.
 				'data-view-type="'.$view_type.'"'.
+				'data-reload-full-page="'.$reload_full_page.'"'.
 				'data-src="'.$image_url.'"';
 
 			if ($media_type == 'video') {
@@ -450,6 +464,8 @@ if(!class_exists('cointent_class'))
 		function cointent_content_filter($content)
 		{
 			global $post;
+			global $wp_scripts;
+
 			$hasaccess = false;
 			$isGated = true;
 			if( (!isset($_GET['email']) && !isset($_GET['uid'])) || !isset($_GET['token']) || !isset($_GET['time'])) {
@@ -467,6 +483,18 @@ if(!class_exists('cointent_class'))
 				$hasaccess = $this->cointent_has_access($email, $uid, $_GET['token'], $_GET['time']);
 
 			}
+			/***
+			 *******
+			 */
+
+			$this->scripts = array_merge($wp_scripts->queue, $wp_scripts->done);;
+
+			// DO OTHER SHORT CODES
+			$content = do_shortcode($content);
+
+			/***
+			 *******
+			 */
 
 			add_shortcode('cointent_lockedcontent', array(&$this, "cointent_widgetHandler"));
 			$options = get_option('Cointent');
@@ -491,11 +519,9 @@ if(!class_exists('cointent_class'))
 			/********* THIS SECTION WILL NOT WORK WITH TECHPINION, IT DOES THE LOCKING TP depends on another plugin to do locking *********/
 			if ($hasaccess) {
 
-				//$content = $post->post_content;
-
 				$pos = strpos( $content, 'cointent_lockedcontent') ;
 				if ($pos <= 0) {
-
+					$content = do_shortcode($content);
 					$content .= '[cointent_lockedcontent view_type="'.$view_type.'" title="'.$title.'" subtitle="'.$subtitle.'"'
 						.' post_purchase_title="'.$widget_post_purchase_title.'"'
 						.' post_purchase_subtitle="'.$widget_post_purchase_subtitle.'"]'

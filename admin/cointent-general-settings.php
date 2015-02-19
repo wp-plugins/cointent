@@ -58,7 +58,22 @@ function cointent_general_settings() {
 									</td>
 								</tr>
 								<tr>
-
+									<td>
+										<h4>Full page reload</h4>
+										<p>If you are just locking text we suggest partial page reload. If you have interactive content, you may need to do a full page reload to make sure the correct javascript files are included.</p>
+									</td>
+									<td>
+										<ul>
+											<li>
+												<input type="radio" id="ct_reload_partial_page" name="Cointent[reload_full_page]" value="0" <?php if ($options['reload_full_page'] ==  false ) { echo "checked"; }?>/><label for="ct_reload_partial_page">&nbsp;<?php _e( 'Partial' ); ?></label><br>
+											</li>
+											<li>
+												<input type="radio" id="ct_reload_full_page" name="Cointent[reload_full_page]" value="1" <?php if ($options['reload_full_page'] ==  true ) { echo "checked"; }?>/><label for="ct_reload_full_page">&nbsp;<?php _e( 'Full' ); ?></label><br>
+											</li>
+										</ul>
+									</td>
+								</tr>
+								<tr>
 									<td>
 										<h4><?php _e('Locked Categories') ?> </h4>
 										<p>You can lock entire categories of posts, a short preview will automatically be shown to users, followed by the paywall. Include categories are categories that you want to have a paywall, include is overriden by exclude categories. Excluded categories will not be gated by a paywall. </p>
@@ -123,7 +138,6 @@ function cointent_general_settings() {
 									</td>
 									<td>
 										<ul>
-
 											<li>
 												<input type="radio" id="ct_active" name="Cointent[cointent_tracking]" value="1" <?php if (isset($options['cointent_tracking']) && $options['cointent_tracking'] == true ) { echo "checked"; }?>/><label for="ct_tracking_active">&nbsp;<?php _e( 'Active' ); ?></label><br>
 											</li>
