@@ -3,7 +3,7 @@
  * Plugin Name: CoinTent
  * Plugin URI: http://cointent.com
  * Description: CoinTent let’s you sell individual pieces of content for small amounts ($0.05-$1.00).  You choose what content to sell and how to sell it. We handle the rest.
- * Version: 1.3.3
+ * Version: 1.3.4
  * Author: CoinTent, Inc.
  * License: GPL2
  */
@@ -30,7 +30,7 @@ if(!class_exists('cointent_class'))
 			if (is_admin()) {
 				require_once COINTENT_DIR . '/admin/cointent-admin.php';
 			} else {
-				add_filter('the_content', array(&$this, 'cointent_content_filter'), 9);
+				add_filter('the_content', array(&$this, 'cointent_content_filter'));
 			//	add_filter('the_content', array(&$this, 'cointent_javascript_sweep'), 1000);
 				add_shortcode('cointent_extras', array(&$this, "cointent_extrasHandler"));
 				// Handles loading the css for the widget
@@ -400,6 +400,19 @@ if(!class_exists('cointent_class'))
 
 			return curl_exec($curl);
 		}
+
+		/**
+		 * Determine whether the content has been processed already for this article or page
+		 *
+		 * @param $content
+		 * @return bool True if the shortcode is present or has already been processed
+		 */
+		function isShortcodePresent ($content) {
+			$sc = has_shortcode($content, 'cointent_lockedcontent');
+			$scString = strpos($content, '[cointent_lockedcontent') !== false;
+			$scProcessed = strpos($content,'class="cointent-widget"')  !== false;
+			return $sc || $scString || $scProcessed;
+		}
 		/**
 		 * Determine whether post is gated based on include and exclude category settings
 		 * Excluded categories are evalutaed first and override included categories
@@ -421,7 +434,7 @@ if(!class_exists('cointent_class'))
 			// If they aren't set make sure we at least have an array to go through
 			$activeCategories = $activeCategories ? $activeCategories : array();
 			$inactiveCategories = $inactiveCategories ? $inactiveCategories : array();
-			if (has_shortcode($post->post_content, 'cointent_lockedcontent') || strpos($post->post_content, '[cointent_lockedcontent') !== false || strpos($post->post_content,'class="cointent-widget"')  !== false) {
+			if ($this->isShortcodePresent($post->post_content)) {
 				return true;
 			}
 			//for these post types, we want to check the parent
@@ -519,8 +532,8 @@ if(!class_exists('cointent_class'))
 			/********* THIS SECTION WILL NOT WORK WITH TECHPINION, IT DOES THE LOCKING TP depends on another plugin to do locking *********/
 			if ($hasaccess) {
 
-				$pos = strpos( $content, 'cointent_lockedcontent') ;
-				if ($pos <= 0) {
+				//$pos = strpos( $content, 'cointent_lockedcontent') ;
+				if (!$this->isShortcodePresent($content)) {
 					$content = do_shortcode($content);
 					$content .= '[cointent_lockedcontent view_type="'.$view_type.'" title="'.$title.'" subtitle="'.$subtitle.'"'
 						.' post_purchase_title="'.$widget_post_purchase_title.'"'
@@ -540,9 +553,7 @@ if(!class_exists('cointent_class'))
 
 					$content = $post->post_content;
 
-					$pos = strpos( $content, 'cointent_lockedcontent') ;
-
-					if ($pos <= 0){
+					if (!$this->isShortcodePresent($content)){
 						// Make short preview - pulled form wp_trim_excerpt
 						// IF THE MORE TAG EXISTS use that as breaking
 						$morestring = '<!--more-->';

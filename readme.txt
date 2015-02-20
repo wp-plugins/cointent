@@ -1,10 +1,10 @@
 === CoinTent ===
 Contributors: cointent
 Tags: access-control, braintree, content, content monetization, ecommerce, earn money, make money, micropayments, monetize, monetization, paywall, pay per view, payment, payments, paywall, premium, premium content,restrict access, sell, sell content, sell digital goods,stripe, widget
-Version: 1.3.3
+Version: 1.3.4
 Requires at least: 3.8
 Tested up to: 4.1
-Stable tag: 1.3.3
+Stable tag: 1.3.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -126,6 +126,9 @@ Yes. This way we can remember which articles your readers have purchased, and bi
 Please email us at <support@cointent.com> we will fix it right away. Thanks for your help!
 
 == Changelog ==
+= 1.3.4 =
+* Fix for duplicated widgets appearing on some articles and pages
+
 = 1.3.3 =
 * Option to reload full page to catch JS files added via other plugins. If you lock another plugin's shortcode via the CoinTent plugin, it should now work, with this option active
 
