@@ -8,11 +8,7 @@
 #cointent-admin {
 	margin-right: 20px;
 }
-#cointent-admin .intro {
-	width: 700px;
-	margin: 0 auto;
-	text-align: center;
-}
+
 #cointent-admin table {
 	border-spacing: 0;
 	width:100%;
@@ -52,4 +48,51 @@
 }
 #cointent-admin .bold {
 	font-weight: bold;
+}
+#cointent-admin .intro_box {
+	background-color: #FFF1D2;
+	padding:10px;
+	border: 2px solid rgb(238, 181, 112);
+	min-width:400px;
+}
+#cointent-admin .intro_box .header{
+	vertical-align: baseline;
+	font-size: 23px;
+	padding-top: 10px;
+}
+#cointent-admin .intro_box .header * {
+	vertical-align: bottom;
+	display:inline-block;
+}
+#cointent-admin .intro_box .header img {
+	height: 30px;
+	margin: 0 0  -6px 6px;
+}
+
+#cointent-admin .intro_box h2 {
+
+}
+#cointent-admin .cointent_step_box h3 {
+	padding: 40px 0 20px;
+	font-size: 23px;
+	color: rgb(30,95,100);
+	font-weight: 300;
+}
+#cointent-admin .cointent_step_box {
+	display: inline-block;
+	width: 31%;
+	box-sizing: border-box;
+	border: 1px solid #EADAB6;
+	background-color: white;
+	padding: 10px;
+	vertical-align: top;
+	margin: 1%;
+	box-shadow: inset 0 0 2px rgba(242, 237, 225, 1);
+	min-height:175px;
+}
+#cointent-admin .cointent_step_box div {
+	float:right;
+}
+#cointent-admin .cointent_step_box > p {
+	margin:0;
 }

@@ -3,7 +3,7 @@
  * Plugin Name: CoinTent
  * Plugin URI: http://cointent.com
  * Description: CoinTent let’s you sell individual pieces of content for small amounts ($0.05-$1.00).  You choose what content to sell and how to sell it. We handle the rest.
- * Version: 1.3.4
+ * Version: 1.3.5
  * Author: CoinTent, Inc.
  * License: GPL2
  */
@@ -30,15 +30,24 @@ if(!class_exists('cointent_class'))
 			if (is_admin()) {
 				require_once COINTENT_DIR . '/admin/cointent-admin.php';
 			} else {
-				add_filter('the_content', array(&$this, 'cointent_content_filter'));
-			//	add_filter('the_content', array(&$this, 'cointent_javascript_sweep'), 1000);
-				add_shortcode('cointent_extras', array(&$this, "cointent_extrasHandler"));
+				// Register filter (run w/ default priority 10)
+				add_filter('the_content', array(&$this, 'cointent_determine_shortcode_status'));
+
+				// Register filter, run w/ priority 10 (removes shortcode from excerpts)
+				add_filter('the_excerpt', array(&$this,'cointent_content_remove_filter'),10 );
+
+				// Register shortcodes (run with priority 11, via add_filter( 'the_content', 'do_shortcode', 11 ); // From shortcodes.php
+				add_shortcode('cointent_lockedcontent', array(&$this, "cointent_add_widget"));
+				add_shortcode('cointent_extras', array(&$this, "cointent_extra_content_handler"));
+
 				// Handles loading the css for the widget
 				add_action('wp_enqueue_scripts', array(&$this, 'cointent_register_plugin_styles'));
 
-				add_filter('the_excerpt', array(&$this,'cointent_content_remove_filter'),20 );
+				// Get saved options from the DB
 				$options = get_option("Cointent");
 
+				// Tracking has to be configurable based on WP rules, check to see if the client has
+				// allowed tracking to determine whether those functions are registered
 				if (isset($options['cointent_tracking']) && $options['cointent_tracking']) {
 					//	cointent_home_stats();
 					add_action('init', array(&$this, "cointent_home_stats"), 5);
@@ -46,23 +55,12 @@ if(!class_exists('cointent_class'))
 				}
 			}
 		}
-		public function cointent_javascript_sweep($content) {
-			global $wp_scripts;
-			$printed = array_merge($wp_scripts->queue, $wp_scripts->done);
-			$scriptsWe = array_diff($printed, $this->scripts);
 
-			foreach ($scriptsWe  as $id=>$s){
-				$wp_scripts->print_scripts($s);
-			}
-
-			return $content;
-		}
 		/**
 		 * Activates the Cointent plugin and does any necessary upgrades and check compatibility
 		 */
 		public static function cointent_activate() {
 			// DO upgrades/migrations if necessary
-
 			$default_options = array(
 				'publisher_id' => 0,
 				'preview_count' => 55,
@@ -76,7 +74,8 @@ if(!class_exists('cointent_class'))
 				'widget_subtitle' => '',
 				'widget_post_purchase_title' => 'Thanks for reading!',
 				'widget_post_purchase_subtitle' => '',
-				'view_type' => 'condensed'
+				'view_type' => 'condensed',
+				'reload_full_page' => false
 			);
 			$options = get_option( 'Cointent', $default_options );
 			update_option('Cointent', $options);
@@ -87,28 +86,51 @@ if(!class_exists('cointent_class'))
 			delete_option( 'Cointent' );
 		}
 		public static function cointent_deactivate() {
-			// Remove info from DB on deactivate?
-			// THings to
+			// Don't do anything, keep information
 		}
 
 		/**
-		 * Handle hiding some text based on whether the cointent_contentlocker is active
-		 * @param  [array] $atts     Any passed information from the shortcode, nothing anticipated
-		 * @param  [string] $content Any content from within the cointent_extras shortcode
-		 * @return [string] 		 Filtered content
+		 * Register the relevant styles and scripts
 		 */
-		function cointent_extrasHandler($atts, $content=null) {
+		function cointent_register_plugin_styles() {
+			$options = get_option('Cointent');
+			$environment =  $options['environment'];
+			$base_url = COINTENT_PRODUCTION;
+			if ($environment == 'sandbox') {
+				$base_url = COINTENT_SANDBOX;
+			}
+
+			wp_register_script('main-cointent-js', '//'.$base_url.'/cointent.0.2.js');
+			wp_register_script('tracking-cointent-js', '//'.$base_url.'/cointent-tracker.0.2.js');
+			$tracking_active = $options['cointent_tracking'];
+
+			if (!$tracking_active) {
+				wp_localize_script('main-cointent-js','cointent_tracking_data', array('tracking_inactive'=>true));
+			}
+			// CSS
+			wp_register_style('cointent-wp-plugin', '//'.$base_url.'/style.css' );
+			wp_enqueue_style('cointent-wp-plugin');
+
+		}
+		/**
+		 * Handle hiding some text based on whether the cointent_contentlocker is active
+		 * This is mostly TP specific but if we wanted to add in extra info we could wrap it here
+		 * @param  array	 $atts     	Any passed information from the shortcode, nothing anticipated
+		 * @param  string 	$content 	Any content from within the cointent_extras shortcode
+		 * @return string 		 		Filtered content
+		 */
+		function cointent_extra_content_handler($atts, $content=null) {
 			// Emergency shut off
 			// Hides any text marked within cointent_extras
 			if (SHOW_FAILURE_MESSAGE) {
-				return;
+				return $content;
 			}
 
 			// If user has access either by purchase or because the article is not gated by cointent
 			// Do not show the extra text
-			$hasCTaccess = !$this->cointent_is_content_gated();
-			if ($hasCTaccess) {
-				return;
+			$has_cointent_access = !$this->cointent_is_content_gated();
+			if ($has_cointent_access) {
+				return $content;
 			}
 
 			// Return the content wrapped in the cointent_extras
@@ -117,11 +139,11 @@ if(!class_exists('cointent_class'))
 
 		/**
 		 * Handle showing the widget at the bottom of the content
-		 * @param  [array] $atts     Any passed information from the shortcode, nothing anticipated
-		 * @param  [string] $content Any content from within the cointent_extras shortcode
-		 * @return [string] 		 Filtered content
+		 * @param  array 	$atts     	Any passed information from the shortcode, nothing anticipated
+		 * @param  string 	$content 	Any content from within the cointent_extras shortcode
+		 * @return string 			 	Filtered content
 		 */
-		function cointent_widgetHandler($atts, $content=null) {
+		function cointent_add_widget($atts, $content=null) {
 
 			// Emergency shut off
 			// Displays a failure message instead of the widget
@@ -136,42 +158,43 @@ if(!class_exists('cointent_class'))
 			$hidden_content = '';
 
 			// If a user is running noscript or turned off javascript display a message that they can't do it
-			$no_script = $this->cointent_getNoScriptNotice();
+			$no_script = $this->cointent_get_no_script_notice();
 
 			// If you have been passed authentication information check to see if the user has
 			// purchased the content, if you don't just check to see if the content is gated by cointent or not
 			if( (!isset($_GET['email']) && !isset($_GET['uid'])) || !isset($_GET['token']) || !isset($_GET['time'])) {
-				$isGated = $this->cointent_is_content_gated();
+				$is_gated = $this->cointent_is_content_gated();
 				// If not gated, don't change the content and return
-				if (!$isGated) {
-					return;
+				if (!$is_gated) {
+					return $content;
 				}
-				$hasCTaccess = !$isGated;
+				$has_cointent_access = !$is_gated;
 			} else {
 				$email = isset($_GET['email']) ? $_GET['email'] : '';
 				$uid = isset($_GET['uid']) ?  $_GET['uid'] : '';
-				$hasCTaccess = $this->cointent_has_access($email, $uid, $_GET['token'], $_GET['time']);
+				$has_cointent_access = $this->cointent_has_access($email, $uid, $_GET['token'], $_GET['time']);
 			}
 
 			// If the user has access or the script has already been loaded, don't load the script again
-			if ( $hasCTaccess  && $content) {
+			if ( $has_cointent_access  && $content) {
 				// if there is content in the short code, hide it behind gating.
 				$hidden_content ='<div id="cointent_gated">'.$content.'</div>';
 			}
-
-			// Added class to wrap widget in, (initial case to apply publisher's css to widget and clear a float)
-			$widget_script = $this->cointent_buildWidget($hasCTaccess, $atts);
-
+			$widget_script = '';
+			if (strpos($content,'class="cointent-widget"')  === false) {
+				// Added class to wrap widget in, (initial case to apply publisher's css to widget and clear a float)
+				$widget_script = $this->cointent_create_widget($has_cointent_access, $atts);
+			}
 
 			$content = $hidden_content .$no_script . $widget_script;
-
 			return wpautop(do_shortcode($content));
 		}
+
 		/**
 		 * Returns the no script notice
-		 * @return [type] [description]
+		 * @return string A message to show if the user has decided not to
 		 */
-		function cointent_getNoScriptNotice() {
+		function cointent_get_no_script_notice() {
 			return '<noscript>
 				<style type="text/css">
 					.cointent-widget {display:none;}
@@ -184,16 +207,15 @@ if(!class_exists('cointent_class'))
 
 		/**
 		 * Handling building out the widget based on whether the content is gated/ungated locked/unlocked
-		 * @return [type] [description]
+		 * @return string Widget HTML
 		 */
-		function cointent_buildWidget($hasCTaccess, $atts) {
+		function cointent_create_widget($has_cointent_access, $atts) {
 			// Current post Id - maps to cointent article id
 			global $post;
 			$time = 0;
 			if ($post->post_content)	{
 				//defined exerpt
 				$content = $post->post_content;
-				$time = $this->cointent_getTimeToRead($content);
 			}
 
 			$widget_script = '';
@@ -201,17 +223,15 @@ if(!class_exists('cointent_class'))
 			// Setup environment to point the plugin to
 			$options =  get_option('Cointent');
 			$post_id = get_the_ID();
-			$environment =  $options['environment'];
-			$base_url = COINTENT_PRODUCTION;
-
-			if ($environment == 'sandbox') {
-				$base_url = COINTENT_SANDBOX;
-			}
-
-
 			// Pull information from admin panel
 			// TODO: handle it not existing - required information
 			$publisher_id = $options['publisher_id'];
+			$environment =  $options['environment'];
+
+			$base_url = COINTENT_PRODUCTION;
+			if ($environment == 'sandbox') {
+				$base_url = COINTENT_SANDBOX;
+			}
 
 			// Get all of the information from the shortcode
 			//   article title 					-> Title of the article, if doesn't exist use post title
@@ -219,8 +239,9 @@ if(!class_exists('cointent_class'))
 			//   subtitle 						-> Message below the title to display on the widget BEFORE purchase
 			//   post_purchase_title  			-> Title to display on the widget AFTER purchase
 			//   post_purchase_subtitle 		-> Message below the title to display on the widget AFTER purchase
-			//   view_type 						-> full - full widget all options
-			//   								   condensed - just button and login status
+			//   view_type 						->
+			// 										full - full widget all options
+			//  									condensed - just button and login status
 			//   image_url 						-> Image to display on the widget
 
 			extract( shortcode_atts( array(
@@ -228,10 +249,8 @@ if(!class_exists('cointent_class'))
 				'article_title' => '',
 				'title' => '',
 				'subtitle' => '',
-				'subtitle_2' => '',
 				'post_purchase_title' => '',
 				'post_purchase_subtitle' => '',
-				'post_purchase_subtitle_2' => '',
 				'view_type' => '',
 				'video_id' => '',
 				'image_url' => '',
@@ -241,7 +260,6 @@ if(!class_exists('cointent_class'))
 				'video_height' => '360',
 				'video_poster' => 'https://kconnect.dev.cointent.com/images/default_poster.png',
 				'reload_full_page' => false
-
 			), $atts, 'cointent_lockedcontent' ));
 
 			// If we don't have an article title use the one from the post
@@ -249,7 +267,7 @@ if(!class_exists('cointent_class'))
 				$article_title = get_the_title($post_id);
 			}
 
-			$wrapperClass = $hasCTaccess ? $options['widget_wrapper_postpurchase'] : $options['widget_wrapper_prepurchase'];
+			$wrapperClass = $has_cointent_access ? $options['widget_wrapper_postpurchase'] : $options['widget_wrapper_prepurchase'];
 
 			$title = $title ? $title : $options['widget_title'];
 			$subtitle = $subtitle ? $subtitle : $options['widget_subtitle'];
@@ -265,7 +283,6 @@ if(!class_exists('cointent_class'))
 				$post_id = $video_id;
 			}
 
-
 			$view_type = $view_type ? $view_type : $options['view_type'];
 
 			if ($wrapperClass) {
@@ -276,7 +293,6 @@ if(!class_exists('cointent_class'))
 			$dataFields = 'data-publisher-id="'.$publisher_id.'" data-article-id="'.$post_id.'"'.
 				'data-article-title="'.$article_title.'"'.
 				'data-title="'.$title.'"'.
-				'data-time="'.$time.'"'.
 				'data-url="'.get_permalink($post_id).'"'.
 				'data-subtitle="'.$subtitle.'"'.
 				'data-post-purchase-subtitle="'.$post_purchase_subtitle.'"'.
@@ -295,7 +311,7 @@ if(!class_exists('cointent_class'))
 			}
 			// If the user has access or the script has already been loaded, don't load the script again
 			$widget_script .= '<div class="cointent-'.$cssClazz.'" '.$dataFields.'></div>';
-			if (!$hasCTaccess && !isset($_GET['loadScript'])) {
+			if (!$has_cointent_access && !isset($_GET['loadScript'])) {
 				wp_enqueue_script('main-cointent-js');
 				$tracking_active = $options['cointent_tracking'];
 				if ($tracking_active) {
@@ -307,7 +323,7 @@ if(!class_exists('cointent_class'))
 					wp_localize_script('main-cointent-js','cointent_tracking_data', $data);
 					$isEnqueued = wp_script_is( 'tracking-cointent-js', 'enqueued' );
 					if ($isEnqueued) {
-						add_action('wp_print_scripts','dequeueTracking');
+						add_action('wp_print_scripts','cointent_dequeue_tracking');
 					}
 				}
 			}
@@ -320,19 +336,20 @@ if(!class_exists('cointent_class'))
 			return $widget_script;
 		}
 
-		function dequeueTracking () {
+		function cointent_dequeue_tracking () {
 			wp_dequeue_script( 'tracking-cointent-js' );
 			wp_deregister_script( 'tracking-cointent-js' );
 		}
 
-		function cointent_getTimeToRead($content) {
-			$wordsPerMin = str_word_count($content) / cointent_class::WORDS_PER_MINUTE;
-			$wordsPerMin = round(max(1, $wordsPerMin));
-			return $wordsPerMin;
-		}
-
+		/**
+		 * Based on the passed in params, determines whether the user has access to the article
+		 * @param string $email
+		 * @param string $uid
+		 * @param string $token
+		 * @param int $timestamp
+		 * @return bool
+		 */
 		function cointent_has_access($email = '', $uid = '', $token = '', $timestamp = 0) {
-
 			global $post;
 
 			// If we don't gate they have access
@@ -340,18 +357,12 @@ if(!class_exists('cointent_class'))
 				return true;
 			}
 
-			$params = array(
-				"email" => $email,
-				"uid" => $uid,
-				"token" => $token,
-				"time" => $timestamp
-			);
+
 			// Retrieve publisher id
 			$options = get_option('Cointent');
 
 			$environment =  $options['environment'];
 			$publisher_id =  $options['publisher_id'];
-
 
 			$base_url = API_BASE_URL;
 			if ($environment == 'sandbox') {
@@ -360,19 +371,30 @@ if(!class_exists('cointent_class'))
 			// Setup call to get gating information
 			$url  = 'https://'.$base_url."/gating/publisher/".$publisher_id."/article/".$post->ID;
 
-			$postResult = $this->cointent_callAPI('GET', $url, $params);
+			$params = array(
+				"email" => $email,
+				"uid" => $uid,
+				"token" => $token,
+				"time" => $timestamp
+			);
 
-			if ($postResult) {
-				$result = json_decode($postResult);
+			$post_result = $this->cointent_call_api('GET', $url, $params);
+
+			if ($post_result) {
+				$result = json_decode($post_result);
 				return $result->gating->access;
 			}
 			return false;
 		}
 
-		/*
+		/**
 		 * Make an api curl call to another server
+		 * @param $method
+		 * @param $url
+		 * @param bool $data
+		 * @return mixed
 		 */
-		function cointent_callAPI($method, $url, $data = false)
+		function cointent_call_api($method, $url, $data = false)
 		{
 			$curl = curl_init();
 
@@ -407,19 +429,20 @@ if(!class_exists('cointent_class'))
 		 * @param $content
 		 * @return bool True if the shortcode is present or has already been processed
 		 */
-		function isShortcodePresent ($content) {
+		function is_shortcode_present ($content) {
 			$sc = has_shortcode($content, 'cointent_lockedcontent');
 			$scString = strpos($content, '[cointent_lockedcontent') !== false;
 			$scProcessed = strpos($content,'class="cointent-widget"')  !== false;
 			return $sc || $scString || $scProcessed;
 		}
+
 		/**
 		 * Determine whether post is gated based on include and exclude category settings
 		 * Excluded categories are evalutaed first and override included categories
 		 * Ex. "Cat E" is set to be excluded and "Cat I" is set to be included
 		 *     a post with both "Cat E" and "Cat I" categories will NOT be gated
 		 *
-		 * @return [boolean] True if the content is gate, False if it is not
+		 * @return boolean True if the content is gate, False if it is not
 		 */
 		function cointent_is_content_gated () {
 			global $post;
@@ -434,14 +457,18 @@ if(!class_exists('cointent_class'))
 			// If they aren't set make sure we at least have an array to go through
 			$activeCategories = $activeCategories ? $activeCategories : array();
 			$inactiveCategories = $inactiveCategories ? $inactiveCategories : array();
-			if ($this->isShortcodePresent($post->post_content)) {
+
+			// If they have added the shortcode by hand, it is GATED
+			if ($this->is_shortcode_present($post->post_content)) {
 				return true;
 			}
+
 			//for these post types, we want to check the parent
 			if ($mypost->post_type == "attachment" || $mypost->post_type == "revision") {
 				$mypost = get_post($mypost->post_parent);
 			}
-			// Only gate posts
+
+			// Only gate posts via categories,]
 			if ($mypost->post_type == "post") {
 				$post_categories = wp_get_post_categories($mypost->ID);
 				// Search through all the EXCLUDE categories
@@ -460,7 +487,6 @@ if(!class_exists('cointent_class'))
 					}
 				}
 			}
-
 			return $is_gated;
 		}
 
@@ -471,45 +497,28 @@ if(!class_exists('cointent_class'))
 
 		/**
 		 * Filters the content for our shortcode, locks if necessary
-		 * @param  [type] $content [description]
-		 * @return [type]          [description]
+		 * @param  string $content [description]
+		 * @return void         [description]
 		 */
-		function cointent_content_filter($content)
+		function cointent_determine_shortcode_status($content)
 		{
 			global $post;
 			global $wp_scripts;
 
-			$hasaccess = false;
+			$has_access = false;
 			$isGated = true;
 			if( (!isset($_GET['email']) && !isset($_GET['uid'])) || !isset($_GET['token']) || !isset($_GET['time'])) {
-
 				// Not enough info to do check
 				$isGated = $this->cointent_is_content_gated();
 				if (!$isGated) {
-					remove_shortcode( 'cointent_lockedcontent' );
+					$content = $this->cointent_content_remove_filter($content);
 				}
-
 			} else {
-
 				$email = isset($_GET['email']) ? $_GET['email'] : '';
 				$uid = isset($_GET['uid']) ?  $_GET['uid'] : '';
-				$hasaccess = $this->cointent_has_access($email, $uid, $_GET['token'], $_GET['time']);
-
+				$has_access = $this->cointent_has_access($email, $uid, $_GET['token'], $_GET['time']);
 			}
-			/***
-			 *******
-			 */
 
-			$this->scripts = array_merge($wp_scripts->queue, $wp_scripts->done);;
-
-			// DO OTHER SHORT CODES
-			$content = do_shortcode($content);
-
-			/***
-			 *******
-			 */
-
-			add_shortcode('cointent_lockedcontent', array(&$this, "cointent_widgetHandler"));
 			$options = get_option('Cointent');
 
 			$view_type = $options['view_type'];
@@ -523,90 +532,76 @@ if(!class_exists('cointent_class'))
 			/*
 			* //if they don't have access through cointent or its not gated by us,
 			* //leave as is, either another plugin locked it or allowed it
-			* if (!$hasaccess || !$isGated) { // USE THIS LINE IF SOMETHING ELSE IS GATING CONTENT ( LIKE PMP )
+			* if (!$has_access || !$isGated) { // USE THIS LINE IF SOMETHING ELSE IS GATING CONTENT ( LIKE PMP )
 			*	return do_shortcode($content);
 			* }
 			*/
 			/*********** End TP ONLY SECTION *************/
 
 			/********* THIS SECTION WILL NOT WORK WITH TECHPINION, IT DOES THE LOCKING TP depends on another plugin to do locking *********/
-			if ($hasaccess) {
+			if ($has_access) {
 
 				//$pos = strpos( $content, 'cointent_lockedcontent') ;
-				if (!$this->isShortcodePresent($content)) {
+				if (!$this->is_shortcode_present($content)) {
 					$content = do_shortcode($content);
 					$content .= '[cointent_lockedcontent view_type="'.$view_type.'" title="'.$title.'" subtitle="'.$subtitle.'"'
 						.' post_purchase_title="'.$widget_post_purchase_title.'"'
 						.' post_purchase_subtitle="'.$widget_post_purchase_subtitle.'"]'
 						.'[/cointent_lockedcontent]';
 				}
-
-				return do_shortcode($content);
 			}
-			else if (!$isGated) {
-				return do_shortcode($content);
-			}
-			/********* END SECTION*********/
-			else {
+			else if ($isGated) {
 				if ($post->post_content)	{
 					//defined exerpt
-
-					$content = $post->post_content;
-
-					if (!$this->isShortcodePresent($content)){
-						// Make short preview - pulled form wp_trim_excerpt
-						// IF THE MORE TAG EXISTS use that as breaking
-						$morestring = '<!--more-->';
-						$explode_content = explode( $morestring, $post->post_content );
-						if (isset($explode_content[0]) && isset($explode_content[1])) {
-							$content = $explode_content[0];
-						}
-						// ELSE use default word count
-						else {
-							$wordAndPosition = str_word_count($content, 2);
-							$length = $options['preview_count'];
-							if (count($wordAndPosition) - 1 < $options['preview_count']) {
-								$length = count($wordAndPosition) - 1;
-							}
-							$arraySlice = array_slice($wordAndPosition, $length, 1, true);
-							$lastWord = reset($arraySlice);
-							$indexToSplit = key($arraySlice) + strlen($lastWord);
-							$content = substr($content, 0, $indexToSplit+1 )."...";
-						}
-
-						$content = wpautop($content);
-						$content .= '[cointent_lockedcontent view_type="'.$view_type.'" title="'.$title.'" subtitle="'.$subtitle.'"'
-							.' post_purchase_title="'.$widget_post_purchase_title.'"'
-							.' post_purchase_subtitle="'.$widget_post_purchase_subtitle.'"]'
-							.'[/cointent_lockedcontent]';
-					}
+					$content = $this->cointent_define_preview();
 				}
 			}
 
 			return do_shortcode($content);
 		}
+		function cointent_define_preview() {
+			global $post;
+			$content = $post->post_content;
 
-		function cointent_register_plugin_styles() {
 			$options = get_option('Cointent');
-			$environment =  $options['environment'];
-			$base_url = COINTENT_PRODUCTION;
-			if ($environment == 'sandbox') {
-				$base_url = COINTENT_SANDBOX;
+
+			$view_type = $options['view_type'];
+			$subtitle = $options['widget_subtitle'];
+			$title = $options['widget_title'];
+			$widget_post_purchase_subtitle = $options['widget_post_purchase_subtitle'];
+			$widget_post_purchase_title = $options['widget_post_purchase_title'];
+
+			if (!$this->is_shortcode_present($content)){
+				// Make short preview - pulled form wp_trim_excerpt
+				// IF THE MORE TAG EXISTS use that as breaking
+				$morestring = '<!--more-->';
+				$explode_content = explode( $morestring, $post->post_content );
+				if (isset($explode_content[0]) && isset($explode_content[1])) {
+					$content = $explode_content[0];
+				}
+				// ELSE use default word count
+				else {
+					$wordAndPosition = str_word_count($content, 2);
+					$length = $options['preview_count'];
+					if (count($wordAndPosition) - 1 < $options['preview_count']) {
+						$length = count($wordAndPosition) - 1;
+					}
+					$arraySlice = array_slice($wordAndPosition, $length, 1, true);
+					$lastWord = reset($arraySlice);
+					$indexToSplit = key($arraySlice) + strlen($lastWord);
+					$content = substr($content, 0, $indexToSplit+1 )."...";
+				}
+
+				$content = wpautop($content);
+				$content .= '[cointent_lockedcontent view_type="'.$view_type.'" title="'.$title.'" subtitle="'.$subtitle.'"'
+					.' post_purchase_title="'.$widget_post_purchase_title.'"'
+					.' post_purchase_subtitle="'.$widget_post_purchase_subtitle.'"]'
+					.'[/cointent_lockedcontent]';
 			}
-
-			wp_register_script('main-cointent-js', '//'.$base_url.'/cointent.0.2.js');
-			wp_register_script('tracking-cointent-js', '//'.$base_url.'/cointent-tracker.0.2.js');
-			$tracking_active = $options['cointent_tracking'];
-
-			if(!$tracking_active) {
-				wp_localize_script('main-cointent-js','cointent_tracking_data', array('tracking_inactive'=>true));
-			}
-
-
-			wp_register_style('cointent-wp-plugin', '//'.$base_url.'/style.css' );
-			wp_enqueue_style('cointent-wp-plugin');
-
+			return $content;
 		}
+
+
 		/**
 		 *	Add stat tracking to head but don't pass article/pub id bc you are just tracking home
 		 */
