@@ -1,15 +1,14 @@
 === CoinTent ===
 Contributors: cointent
 Tags: access-control, braintree, content, content monetization, ecommerce, earn money, make money, micropayments, monetize, monetization, paywall, pay per view, payment, payments, paywall, premium, premium content,restrict access, sell, sell content, sell digital goods,stripe, widget
-Version: 1.3.5
+Version: 1.3.6
 Requires at least: 3.8
 Tested up to: 4.1
-Stable tag: 1.3.5
+Stable tag: 1.3.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-CoinTent is an easy to use system that allows you to sell your articles, videos, or other content via subscription or micropayments
-
+CoinTent makes it easy to sell your articles, videos, or posts through subscriptions or micropayments ($0.05- $1.00 for individual content access).
 == Description ==
 
 CoinTent is the best way to drive revenue on your site through paid subscriptions or micropayments.  With CoinTent, your viewers can either pay for individual pieces of content (micropayments - $0.05-$1.00) or purchase subscription access to your entire site.  You choose what content to sell and how much to sell it for, and we handle the rest.
@@ -121,6 +120,14 @@ Yes. This way we can remember which articles your readers have purchased, and bi
 Please email us at <support@cointent.com> we will fix it right away. Thanks for your help!
 
 == Changelog ==
+= 1.3.6 =
+* Potential fix for duplicated widgets appearing on some articles and pages
+* Renaming some constants to make sure they don't collide with other plugins
+
+= 1.3.5 =
+* Added check to make sure there aren't duplicate widgets processed
+* Standardized code formatting
+
 = 1.3.4 =
 * Fix for duplicated widgets appearing on some articles and pages
 

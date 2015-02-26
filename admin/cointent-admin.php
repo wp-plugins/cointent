@@ -7,7 +7,7 @@ require_once COINTENT_DIR . '/admin/ajax.php';
 add_action( "admin_menu", 'cointent_add_admin_pages' );
 
 function cointent_add_admin_pages() {
-	add_menu_page( 'CoinTent', 'CoinTent', 'manage_options', 'cointent.php', 'cointent_general_settings', plugins_url('/images/admin_icon.png', BASE_DIR) );
+	add_menu_page( 'CoinTent', 'CoinTent', 'manage_options', 'cointent.php', 'cointent_general_settings', plugins_url('/images/admin_icon.png', COINTENT_BASE_DIR) );
 	//add_options_page( 'Cointent', 'Cointent', 'manage_options',  'cointent_options_settings' );
 	cointent_register_settings();
 
@@ -20,7 +20,7 @@ function cointent_add_admin_pages() {
 }
 function cointent_register_settings() {
 	register_setting( 'cointent-settings-group', 'Cointent', 'cointent_validate_settings' );
-	wp_register_style('cointent-wp-plugin-admin', plugins_url('style.css', BASE_DIR) );
+	wp_register_style('cointent-wp-plugin-admin', plugins_url('style.css', COINTENT_BASE_DIR) );
 	wp_enqueue_style('cointent-wp-plugin-admin');
 }
 

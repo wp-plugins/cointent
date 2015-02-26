@@ -22,23 +22,23 @@ function cointent_general_settings() {
 
 			<div class="intro_box">
 				<div class="header">
-					<span>Welcome to </span><img src="<?php echo plugins_url('/images/logo_and_name_265x51.png', BASE_DIR)?>"/>
+					<span>Welcome to </span><img src="<?php echo plugins_url('/images/logo_and_name_265x51.png', COINTENT_BASE_DIR)?>"/>
 				</div>
 				<p>Geting started is easy! For more informtation, see the <a href="//cointent.com/docs/wordpress">documentation</a>. If you have any questions, send us and email at  <a href="mailto:support@cointent.com">support@cointent.com</a></p>
 				<div>
 
 					<div class="cointent_step_box">
-						<div><img src="<?php echo plugins_url('/images/step_1.png', BASE_DIR)?>"></div>
+						<div><img src="<?php echo plugins_url('/images/step_1.png', COINTENT_BASE_DIR)?>"></div>
 						<h3>Step 1</h3>
 						<p> Get your <a href="https://cointent.com/p/account">publisher account</a> and setup the plugin info below</p>
 					</div>
 					<div class="cointent_step_box">
-						<div><img src="<?php echo plugins_url('/images/step_2.png', BASE_DIR)?>"></div>
+						<div><img src="<?php echo plugins_url('/images/step_2.png', COINTENT_BASE_DIR)?>"></div>
 						<h3>Step 2</h3>
 						<p>Set up your paid posts using <a href="https://en.support.wordpress.com/posts/categories/">categories</a> (or see <a href="https://cointent.com/docs/wordpress/advanced">advanced</a> options for shortcode)</p>
 					</div>
 					<div class="cointent_step_box">
-						<div><img src="<?php echo plugins_url('/images/step_3.png', BASE_DIR)?>"></div>
+						<div><img src="<?php echo plugins_url('/images/step_3.png', COINTENT_BASE_DIR)?>"></div>
 						<h3>Step 3</h3>
 						<p> Post your articles, videos, or content!</p>
 					</div>
@@ -51,7 +51,6 @@ function cointent_general_settings() {
 				 <?php settings_fields( 'cointent-settings-group' ); ?>
 				 <?php do_settings_sections( 'cointent-settings-group' ); ?>
 				<br>
-
 
 				<div class="ct-section">
 

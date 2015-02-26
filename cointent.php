@@ -3,21 +3,21 @@
  * Plugin Name: CoinTent
  * Plugin URI: http://cointent.com
  * Description: CoinTent let’s you sell individual pieces of content for small amounts ($0.05-$1.00).  You choose what content to sell and how to sell it. We handle the rest.
- * Version: 1.3.5
+ * Version: 1.3.6
  * Author: CoinTent, Inc.
  * License: GPL2
  */
 
 define("COINTENT_DIR", plugin_dir_path( __FILE__ ));
-define("BASE_DIR",  __FILE__ );
+define("COINTENT_BASE_DIR",  __FILE__ );
 
 define("COINTENT_PRODUCTION", 'connect.cointent.com');
 define("COINTENT_SANDBOX", 'connect.sandbox.cointent.com');
-define("API_BASE_URL", 'api.cointent.com');
-define("SANDBOX_API_BASE_URL", 'api.sandbox.cointent.com');
+define("COINTENT_API_BASE_URL", 'api.cointent.com');
+define("SANDBOX_COINTENT_API_BASE_URL", 'api.sandbox.cointent.com');
 
 // Flag to show/hide the failure message for all shortcodes
-define("SHOW_FAILURE_MESSAGE", false);
+define("COINTENT_SHOW_FAILURE_MESSAGE", false);
 
 
 if(!class_exists('cointent_class'))
@@ -31,7 +31,7 @@ if(!class_exists('cointent_class'))
 				require_once COINTENT_DIR . '/admin/cointent-admin.php';
 			} else {
 				// Register filter (run w/ default priority 10)
-				add_filter('the_content', array(&$this, 'cointent_determine_shortcode_status'));
+				add_filter('the_content', array(&$this, 'cointent_determine_shortcode_status'), 10);
 
 				// Register filter, run w/ priority 10 (removes shortcode from excerpts)
 				add_filter('the_excerpt', array(&$this,'cointent_content_remove_filter'),10 );
@@ -122,7 +122,7 @@ if(!class_exists('cointent_class'))
 		function cointent_extra_content_handler($atts, $content=null) {
 			// Emergency shut off
 			// Hides any text marked within cointent_extras
-			if (SHOW_FAILURE_MESSAGE) {
+			if (COINTENT_SHOW_FAILURE_MESSAGE) {
 				return $content;
 			}
 
@@ -147,7 +147,7 @@ if(!class_exists('cointent_class'))
 
 			// Emergency shut off
 			// Displays a failure message instead of the widget
-			if (SHOW_FAILURE_MESSAGE) {
+			if (COINTENT_SHOW_FAILURE_MESSAGE) {
 				$message = '<div id="plugin_error_message"><p>CoinTent is currently under maintenance, but will be back up shortly.
 				  </br>If you have any questions or concerns please email support@cointent.com</p></div>';
 
@@ -178,7 +178,7 @@ if(!class_exists('cointent_class'))
 			// If the user has access or the script has already been loaded, don't load the script again
 			if ( $has_cointent_access  && $content) {
 				// if there is content in the short code, hide it behind gating.
-				$hidden_content ='<div id="cointent_gated">'.$content.'</div>';
+				$hidden_content = $content;
 			}
 			$widget_script = '';
 			if (strpos($content,'class="cointent-widget"')  === false) {
@@ -364,9 +364,9 @@ if(!class_exists('cointent_class'))
 			$environment =  $options['environment'];
 			$publisher_id =  $options['publisher_id'];
 
-			$base_url = API_BASE_URL;
+			$base_url = COINTENT_API_BASE_URL;
 			if ($environment == 'sandbox') {
-				$base_url = SANDBOX_API_BASE_URL;
+				$base_url = SANDBOX_COINTENT_API_BASE_URL;
 			}
 			// Setup call to get gating information
 			$url  = 'https://'.$base_url."/gating/publisher/".$publisher_id."/article/".$post->ID;
@@ -503,7 +503,6 @@ if(!class_exists('cointent_class'))
 		function cointent_determine_shortcode_status($content)
 		{
 			global $post;
-			global $wp_scripts;
 
 			$has_access = false;
 			$isGated = true;
@@ -543,7 +542,6 @@ if(!class_exists('cointent_class'))
 
 				//$pos = strpos( $content, 'cointent_lockedcontent') ;
 				if (!$this->is_shortcode_present($content)) {
-					$content = do_shortcode($content);
 					$content .= '[cointent_lockedcontent view_type="'.$view_type.'" title="'.$title.'" subtitle="'.$subtitle.'"'
 						.' post_purchase_title="'.$widget_post_purchase_title.'"'
 						.' post_purchase_subtitle="'.$widget_post_purchase_subtitle.'"]'
@@ -557,7 +555,7 @@ if(!class_exists('cointent_class'))
 				}
 			}
 
-			return do_shortcode($content);
+			return $content;
 		}
 		function cointent_define_preview() {
 			global $post;
@@ -597,6 +595,8 @@ if(!class_exists('cointent_class'))
 					.' post_purchase_title="'.$widget_post_purchase_title.'"'
 					.' post_purchase_subtitle="'.$widget_post_purchase_subtitle.'"]'
 					.'[/cointent_lockedcontent]';
+			} else {
+				error_log("There are duplicate plugins represented");
 			}
 			return $content;
 		}
