@@ -3,7 +3,7 @@
  * Plugin Name: CoinTent
  * Plugin URI: http://cointent.com
  * Description: CoinTent let’s you sell individual pieces of content for small amounts ($0.05-$1.00).  You choose what content to sell and how to sell it. We handle the rest.
- * Version: 1.3.6
+ * Version: 1.3.7
  * Author: CoinTent, Inc.
  * License: GPL2
  */
@@ -123,14 +123,24 @@ if(!class_exists('cointent_class'))
 			// Emergency shut off
 			// Hides any text marked within cointent_extras
 			if (COINTENT_SHOW_FAILURE_MESSAGE) {
-				return $content;
+				return '';
 			}
 
 			// If user has access either by purchase or because the article is not gated by cointent
 			// Do not show the extra text
-			$has_cointent_access = !$this->cointent_is_content_gated();
+
+
+			if ((!isset($_GET['email']) && !isset($_GET['uid'])) || !isset($_GET['token']) || !isset($_GET['time'])) {
+				// Not enough info to do check
+				$has_cointent_access = false;
+			} else {
+				$email = isset($_GET['email']) ? $_GET['email'] : '';
+				$uid = isset($_GET['uid']) ?  $_GET['uid'] : '';
+				$has_cointent_access = $this->cointent_has_access($email, $uid, $_GET['token'], $_GET['time']);
+			}
+
 			if ($has_cointent_access) {
-				return $content;
+				return '';
 			}
 
 			// Return the content wrapped in the cointent_extras
