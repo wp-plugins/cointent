@@ -3,7 +3,7 @@
  * Plugin Name: CoinTent
  * Plugin URI: http://cointent.com
  * Description: CoinTent let’s you sell individual pieces of content for small amounts ($0.05-$1.00).  You choose what content to sell and how to sell it. We handle the rest.
- * Version: 1.3.7
+ * Version: 1.3.8
  * Author: CoinTent, Inc.
  * License: GPL2
  */
@@ -20,8 +20,7 @@ define("SANDBOX_COINTENT_API_BASE_URL", 'api.sandbox.cointent.com');
 define("COINTENT_SHOW_FAILURE_MESSAGE", false);
 
 
-if(!class_exists('cointent_class'))
-{
+if (!class_exists('cointent_class')) {
 	class cointent_class {
 		const WORDS_PER_MINUTE = 200;
 		public $scripts = array();
@@ -34,7 +33,8 @@ if(!class_exists('cointent_class'))
 				add_filter('the_content', array(&$this, 'cointent_determine_shortcode_status'), 10);
 
 				// Register filter, run w/ priority 10 (removes shortcode from excerpts)
-				add_filter('the_excerpt', array(&$this,'cointent_content_remove_filter'),10 );
+				add_filter('the_excerpt', array(&$this,'cointent_content_remove_filter'),1 );
+				add_filter('get_the_excerpt', array(&$this,'cointent_content_remove_filter'),1 );
 
 				// Register shortcodes (run with priority 11, via add_filter( 'the_content', 'do_shortcode', 11 ); // From shortcodes.php
 				add_shortcode('cointent_lockedcontent', array(&$this, "cointent_add_widget"));
@@ -70,12 +70,13 @@ if(!class_exists('cointent_class'))
 				'exclude_categories'=> array(),
 				'widget_wrapper_prepurchase' => '',
 				'widget_wrapper_postpurchase' => '',
-				'widget_title' => 'Please purchase to continue reading this premium content',
+				'widget_title' => 'This content is available for purchase',
 				'widget_subtitle' => '',
-				'widget_post_purchase_title' => 'Thanks for reading!',
+				'widget_post_purchase_title' => 'Thanks you!',
 				'widget_post_purchase_subtitle' => '',
 				'view_type' => 'condensed',
-				'reload_full_page' => false
+				'reload_full_page' => false,
+				'widget_additional_css' => ''
 			);
 			$options = get_option( 'Cointent', $default_options );
 			update_option('Cointent', $options);
@@ -268,6 +269,7 @@ if(!class_exists('cointent_class'))
 				'video_type' => '',
 				'video_width' => '640',
 				'video_height' => '360',
+				'widget_additional_css'=>'',
 				'video_poster' => 'https://kconnect.dev.cointent.com/images/default_poster.png',
 				'reload_full_page' => false
 			), $atts, 'cointent_lockedcontent' ));
@@ -278,7 +280,7 @@ if(!class_exists('cointent_class'))
 			}
 
 			$wrapperClass = $has_cointent_access ? $options['widget_wrapper_postpurchase'] : $options['widget_wrapper_prepurchase'];
-
+			$additionalCss = $additionalCss ? $additionalCss : $options['widget_additional_css'];
 			$title = $title ? $title : $options['widget_title'];
 			$subtitle = $subtitle ? $subtitle : $options['widget_subtitle'];
 			$reload_full_page = $options['reload_full_page'] ? true : false;
@@ -309,6 +311,7 @@ if(!class_exists('cointent_class'))
 				'data-post-purchase-title="'.$post_purchase_title.'"'.
 				'data-view-type="'.$view_type.'"'.
 				'data-reload-full-page="'.$reload_full_page.'"'.
+				'data-additional-css="'.$additionalCss.'"'.
 				'data-src="'.$image_url.'"';
 
 			if ($media_type == 'video') {
@@ -492,7 +495,6 @@ if(!class_exists('cointent_class'))
 				// if the post matches any, return "gated"
 				foreach($post_categories as $cat) {
 					if (array_key_exists($cat, $activeCategories)) {
-						error_log('Correct category ');
 						$is_gated = true;
 					}
 				}
@@ -502,8 +504,13 @@ if(!class_exists('cointent_class'))
 
 		function cointent_content_remove_filter($content) {
 			remove_shortcode( 'cointent_lockedcontent' );
+			$pattern = '\[(\[?)(cointent_extras|cointent_lockedcontent)(?![\w-])([^\]\/]*(?:\/(?!\])[^\]\/]*)*?)(?:(\/)\]|\](?:([^\[]*+(?:\[(?!\/\2\])[^\[]*+)*+)\[\/\2\])?)(\]?)';
+//			// PULLED FROM strip_shortcode - https://core.trac.wordpress.org/browser/tags/4.1.1/src/wp-includes/shortcodes.php#L0
+			$content =  preg_replace_callback( "/$pattern/s", 'strip_shortcode_tag', $content );
 			return $content;
 		}
+
+
 
 		/**
 		 * Filters the content for our shortcode, locks if necessary
@@ -513,7 +520,6 @@ if(!class_exists('cointent_class'))
 		function cointent_determine_shortcode_status($content)
 		{
 			global $post;
-
 			$has_access = false;
 			$isGated = true;
 			if( (!isset($_GET['email']) && !isset($_GET['uid'])) || !isset($_GET['token']) || !isset($_GET['time'])) {
@@ -521,6 +527,7 @@ if(!class_exists('cointent_class'))
 				$isGated = $this->cointent_is_content_gated();
 				if (!$isGated) {
 					$content = $this->cointent_content_remove_filter($content);
+					remove_shortcode('cointent_lockedcontent');
 				}
 			} else {
 				$email = isset($_GET['email']) ? $_GET['email'] : '';
@@ -551,7 +558,7 @@ if(!class_exists('cointent_class'))
 			if ($has_access) {
 
 				//$pos = strpos( $content, 'cointent_lockedcontent') ;
-				if (!$this->is_shortcode_present($content)) {
+				if (!$this->is_shortcode_present($content) && shortcode_exists( 'cointent_lockedcontent' ) ) {
 					$content .= '[cointent_lockedcontent view_type="'.$view_type.'" title="'.$title.'" subtitle="'.$subtitle.'"'
 						.' post_purchase_title="'.$widget_post_purchase_title.'"'
 						.' post_purchase_subtitle="'.$widget_post_purchase_subtitle.'"]'
@@ -579,7 +586,7 @@ if(!class_exists('cointent_class'))
 			$widget_post_purchase_subtitle = $options['widget_post_purchase_subtitle'];
 			$widget_post_purchase_title = $options['widget_post_purchase_title'];
 
-			if (!$this->is_shortcode_present($content)){
+			if (!$this->is_shortcode_present($content) && shortcode_exists( 'cointent_lockedcontent' )){
 				// Make short preview - pulled form wp_trim_excerpt
 				// IF THE MORE TAG EXISTS use that as breaking
 				$morestring = '<!--more-->';

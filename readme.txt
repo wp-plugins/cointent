@@ -1,10 +1,10 @@
 === CoinTent ===
 Contributors: cointent
 Tags: access-control, braintree, content, content monetization, ecommerce, earn money, make money, micropayments, monetize, monetization, paywall, pay per view, payment, payments, paywall, premium, premium content,restrict access, sell, sell content, sell digital goods,stripe, widget
-Version: 1.3.7
+Version: 1.3.8
 Requires at least: 3.8
 Tested up to: 4.1
-Stable tag: 1.3.7
+Stable tag: 1.3.8
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -51,13 +51,14 @@ We provide: Monthly and Yearly Subscriptions, Paywalls, Memberships, Micropaymen
 
 == Installation ==
  CoinTent is easy to setup!  Starting selling content in minutes.
+
 1. Sign up with CoinTent [here](https://cointent.com/p/signup)
-1. Install the plugin to the wp-content/plugins folder
-1. Add your publisher ID (from cointent.com/p/account/) to the Wordpress admin panel in the CoinTent section
-1. Pick a category to gate
-1. You are done! Check out your new paywall.
+2. Install the plugin to the wp-content/plugins folder
+3. Add your publisher ID from [here](cointent.com/p/account/) to the Wordpress admin panel in the CoinTent section
+4. Pick a category to gate
+5. You are done! Check out your new paywall.
 	
-	For more options and customizations checkout the full [documentation here](https://cointent.com/docs/wordpress)
+For more options and customizations checkout the full [documentation here](https://cointent.com/docs/wordpress)
 	
 == Screenshots ==
 
@@ -120,6 +121,15 @@ Yes. This way we can remember which articles your readers have purchased, and bi
 Please email us at <support@cointent.com> we will fix it right away. Thanks for your help!
 
 == Changelog ==
+
+= 1.3.8 =
+* Fix for shortcodes in excerpts where they should not be
+* Updated banner image
+* Updated step images
+* Clean up of admin page, added sections for subscriptions, and added information
+* Ability to add html to subtitle
+* Updated CSS wrapper div to be a single css class
+
 = 1.3.7 =
 * [cointent_extras], now actually works properly
 

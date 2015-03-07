@@ -5,6 +5,13 @@ require_once COINTENT_DIR. '/admin/cointent-general-settings.php';
 require_once COINTENT_DIR . '/admin/ajax.php';
 
 add_action( "admin_menu", 'cointent_add_admin_pages' );
+add_action( 'wp_ajax_save_dismiss_header', 'save_dismiss_header_callback' );
+
+function save_dismiss_header_callback() {
+	$result = get_option('Cointent');
+	$result['intro_dismissed'] = 1;
+	update_option( 'Cointent', $result);
+}
 
 function cointent_add_admin_pages() {
 	add_menu_page( 'CoinTent', 'CoinTent', 'manage_options', 'cointent.php', 'cointent_general_settings', plugins_url('/images/admin_icon.png', COINTENT_BASE_DIR) );
@@ -21,13 +28,19 @@ function cointent_add_admin_pages() {
 function cointent_register_settings() {
 	register_setting( 'cointent-settings-group', 'Cointent', 'cointent_validate_settings' );
 	wp_register_style('cointent-wp-plugin-admin', plugins_url('style.css', COINTENT_BASE_DIR) );
+	wp_register_style('cointent-font', '//fonts.googleapis.com/css?family=Lato:300,400,700,900');
+	wp_register_script('cointent-js',  plugins_url('cointent-admin.js', COINTENT_BASE_DIR) );
+
+	wp_enqueue_style('cointent-font');
 	wp_enqueue_style('cointent-wp-plugin-admin');
+	wp_enqueue_script('cointent-js');
 }
 
 function cointent_validate_settings($input) {
 	$result = get_option('Cointent');
 	$result['publisher_id'] = intval($input['publisher_id']);
 	$result['preview_count'] = intval($input['preview_count']);
+	$result['intro_dismissed'] = intval($input['intro_dismissed']);
 
 	$result['publisher_token'] = $input['publisher_token'];
 	$result['environment'] = $input['environment'];
@@ -65,7 +78,7 @@ function cointent_validate_settings($input) {
 	}
 
 	$prevalidate = (string)trim($input['widget_subtitle']);
-	if(preg_match($pregString, $prevalidate)) {
+	if(true || preg_match($pregString, $prevalidate)) {
 		$result['widget_subtitle'] = $prevalidate;
 	}
 
@@ -75,8 +88,13 @@ function cointent_validate_settings($input) {
 	}
 
 	$prevalidate = (string)trim($input['widget_post_purchase_subtitle']);
-	if(preg_match($pregString, $prevalidate)) {
+	if(true || preg_match($pregString, $prevalidate)) {
 		$result['widget_post_purchase_subtitle'] = $prevalidate;
+	}
+
+	$prevalidate = (string)trim($input['widget_additional_css']);
+	if(preg_match($pregString, $prevalidate)) {
+		$result['widget_additional_css'] = $prevalidate;
 	}
 
 	return $result;
