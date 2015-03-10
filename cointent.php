@@ -3,7 +3,7 @@
  * Plugin Name: CoinTent
  * Plugin URI: http://cointent.com
  * Description: CoinTent let’s you sell individual pieces of content for small amounts ($0.05-$1.00).  You choose what content to sell and how to sell it. We handle the rest.
- * Version: 1.3.8
+ * Version: 1.3.9
  * Author: CoinTent, Inc.
  * License: GPL2
  */
@@ -31,10 +31,6 @@ if (!class_exists('cointent_class')) {
 			} else {
 				// Register filter (run w/ default priority 10)
 				add_filter('the_content', array(&$this, 'cointent_determine_shortcode_status'), 10);
-
-				// Register filter, run w/ priority 10 (removes shortcode from excerpts)
-				add_filter('the_excerpt', array(&$this,'cointent_content_remove_filter'),1 );
-				add_filter('get_the_excerpt', array(&$this,'cointent_content_remove_filter'),1 );
 
 				// Register shortcodes (run with priority 11, via add_filter( 'the_content', 'do_shortcode', 11 ); // From shortcodes.php
 				add_shortcode('cointent_lockedcontent', array(&$this, "cointent_add_widget"));
@@ -197,7 +193,7 @@ if (!class_exists('cointent_class')) {
 				$widget_script = $this->cointent_create_widget($has_cointent_access, $atts);
 			}
 
-			$content = $hidden_content .$no_script . $widget_script;
+			$content = $hidden_content . $widget_script .$no_script;
 			return wpautop(do_shortcode($content));
 		}
 
@@ -502,15 +498,6 @@ if (!class_exists('cointent_class')) {
 			return $is_gated;
 		}
 
-		function cointent_content_remove_filter($content) {
-			remove_shortcode( 'cointent_lockedcontent' );
-			$pattern = '\[(\[?)(cointent_extras|cointent_lockedcontent)(?![\w-])([^\]\/]*(?:\/(?!\])[^\]\/]*)*?)(?:(\/)\]|\](?:([^\[]*+(?:\[(?!\/\2\])[^\[]*+)*+)\[\/\2\])?)(\]?)';
-//			// PULLED FROM strip_shortcode - https://core.trac.wordpress.org/browser/tags/4.1.1/src/wp-includes/shortcodes.php#L0
-			$content =  preg_replace_callback( "/$pattern/s", 'strip_shortcode_tag', $content );
-			return $content;
-		}
-
-
 
 		/**
 		 * Filters the content for our shortcode, locks if necessary
@@ -520,14 +507,14 @@ if (!class_exists('cointent_class')) {
 		function cointent_determine_shortcode_status($content)
 		{
 			global $post;
+
 			$has_access = false;
 			$isGated = true;
 			if( (!isset($_GET['email']) && !isset($_GET['uid'])) || !isset($_GET['token']) || !isset($_GET['time'])) {
 				// Not enough info to do check
 				$isGated = $this->cointent_is_content_gated();
 				if (!$isGated) {
-					$content = $this->cointent_content_remove_filter($content);
-					remove_shortcode('cointent_lockedcontent');
+					return $content;
 				}
 			} else {
 				$email = isset($_GET['email']) ? $_GET['email'] : '';
@@ -558,7 +545,7 @@ if (!class_exists('cointent_class')) {
 			if ($has_access) {
 
 				//$pos = strpos( $content, 'cointent_lockedcontent') ;
-				if (!$this->is_shortcode_present($content) && shortcode_exists( 'cointent_lockedcontent' ) ) {
+				if (!$this->is_shortcode_present($content)) {
 					$content .= '[cointent_lockedcontent view_type="'.$view_type.'" title="'.$title.'" subtitle="'.$subtitle.'"'
 						.' post_purchase_title="'.$widget_post_purchase_title.'"'
 						.' post_purchase_subtitle="'.$widget_post_purchase_subtitle.'"]'
@@ -586,7 +573,7 @@ if (!class_exists('cointent_class')) {
 			$widget_post_purchase_subtitle = $options['widget_post_purchase_subtitle'];
 			$widget_post_purchase_title = $options['widget_post_purchase_title'];
 
-			if (!$this->is_shortcode_present($content) && shortcode_exists( 'cointent_lockedcontent' )){
+			if (!$this->is_shortcode_present($content)){
 				// Make short preview - pulled form wp_trim_excerpt
 				// IF THE MORE TAG EXISTS use that as breaking
 				$morestring = '<!--more-->';
