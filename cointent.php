@@ -3,7 +3,7 @@
  * Plugin Name: CoinTent
  * Plugin URI: http://cointent.com
  * Description: CoinTent let’s you sell individual pieces of content for small amounts ($0.05-$1.00).  You choose what content to sell and how to sell it. We handle the rest.
- * Version: 1.3.9
+ * Version: 1.4.0
  * Author: CoinTent, Inc.
  * License: GPL2
  */
@@ -22,9 +22,17 @@ define("COINTENT_SHOW_FAILURE_MESSAGE", false);
 
 if (!class_exists('cointent_class')) {
 	class cointent_class {
+		private static $instance;
+
+		public static function get_instance() {
+			if ( !isset( self::$instance ) )
+				self::$instance = new cointent_class();
+			return self::$instance;
+		}
+
 		const WORDS_PER_MINUTE = 200;
 		public $scripts = array();
-		public function __construct() {
+		private function __construct() {
 			// Setup admin for cointent
 			if (is_admin()) {
 				require_once COINTENT_DIR . '/admin/cointent-admin.php';
@@ -46,7 +54,7 @@ if (!class_exists('cointent_class')) {
 				// allowed tracking to determine whether those functions are registered
 				if (isset($options['cointent_tracking']) && $options['cointent_tracking']) {
 					//	cointent_home_stats();
-					add_action('init', array(&$this, "cointent_home_stats"), 5);
+					add_action('wp', array(&$this, "cointent_home_stats"), 5);
 					add_filter('the_content', array(&$this, 'cointent_post_stats'), 5);
 				}
 			}
@@ -141,7 +149,7 @@ if (!class_exists('cointent_class')) {
 			}
 
 			// Return the content wrapped in the cointent_extras
-			return do_shortcode($content);
+			return wpautop(do_shortcode($content));
 		}
 
 		/**
@@ -322,6 +330,7 @@ if (!class_exists('cointent_class')) {
 			$widget_script .= '<div class="cointent-'.$cssClazz.'" '.$dataFields.'></div>';
 			if (!$has_cointent_access && !isset($_GET['loadScript'])) {
 				wp_enqueue_script('main-cointent-js');
+
 				$tracking_active = $options['cointent_tracking'];
 				if ($tracking_active) {
 					$data = array('publisherId'=>$publisher_id, 'gated'=>true);
@@ -330,10 +339,8 @@ if (!class_exists('cointent_class')) {
 						$data['articleId'] = $post_id;
 					}
 					wp_localize_script('main-cointent-js','cointent_tracking_data', $data);
-					$isEnqueued = wp_script_is( 'tracking-cointent-js', 'enqueued' );
-					if ($isEnqueued) {
-						add_action('wp_print_scripts','cointent_dequeue_tracking');
-					}
+					add_action('wp_print_scripts', array(&$this, "cointent_dequeue_tracking"));
+					$this->cointent_dequeue_tracking();
 				}
 			}
 
@@ -622,7 +629,7 @@ if (!class_exists('cointent_class')) {
 
 				$isEnqueued = wp_script_is( 'main-cointent-js', 'enqueued' );
 				if (!$isEnqueued) {
-					wp_register_script( 'tracking-cointent-js', '//'.$base_url.'/cointent-tracker.0.2.js');
+					wp_register_script( 'tracking-cointent-js', '//'.$base_url.'/cointent-tracker.0.2.js', array(), false, true);
 					wp_enqueue_script('tracking-cointent-js');
 				}
 
@@ -649,7 +656,7 @@ if (!class_exists('cointent_class')) {
 
 				$isGated = $this->cointent_is_content_gated();
 				if(!$isGated && !$isEnqueued) {
-					wp_register_script( 'tracking-cointent-js', '//'.$base_url.'/cointent-tracker.0.2.js');
+					wp_register_script( 'tracking-cointent-js', '//'.$base_url.'/cointent-tracker.0.2.js', array(), false, true);
 					wp_enqueue_script('tracking-cointent-js');
 				}
 
@@ -662,6 +669,9 @@ if (!class_exists('cointent_class')) {
 
 	}
 }
+function cointent_init () {
+	cointent_class::get_instance();
+}
 
 if (class_exists('cointent_class'))
 {
@@ -670,7 +680,6 @@ if (class_exists('cointent_class'))
 	register_deactivation_hook(__FILE__, array('cointent_class', 'cointent_deactivate'));
 	register_uninstall_hook(__FILE__, array('cointent_class', 'cointent_uninstall'));
 	// instantiate the plugin class
-	$cointent = new cointent_class();
-
+	add_action('plugins_loaded', 'cointent_init');
 }
 ?>

@@ -1,70 +1,70 @@
 === CoinTent ===
 Contributors: cointent
 Tags: access-control, braintree, content, content monetization, ecommerce, earn money, make money, micropayments, monetize, monetization, paywall, pay per view, payment, payments, paywall, premium, premium content,restrict access, sell, sell content, sell digital goods,stripe, widget
-Version: 1.3.9
+Version: 1.4.0
 Requires at least: 3.8
 Tested up to: 4.1
-Stable tag: 1.3.9
+Stable tag: 1.4.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
 CoinTent makes it easy to sell your articles, videos, or posts through subscriptions or micropayments ($0.05- $1.00 for individual content access).
 == Description ==
 
-CoinTent is the best way to drive revenue on your site through paid subscriptions or micropayments.  With CoinTent, your viewers can either pay for individual pieces of content (micropayments - $0.05-$1.00) or purchase subscription access to your entire site.  You choose what content to sell and how much to sell it for, and we handle the rest.
+CoinTent enables you to start selling your content with a free plugin that’s easy to install and setup.
 
-CoinTent offers a free plug-in and is easy to install and setup.  We make it simple to start selling your content.
+CoinTent is the best way to drive revenue on your site through paid subscriptions or micropayments. With CoinTent, your visitors can either pay for individual pieces of content or purchase subscription access to your entire site. You choose what content to sell and how much to sell it for (as little as $0.05). We handle the rest:
 
-* Subscriptions/Membership or Micropayments - you can sell access to individual articles or monthly/yearly subscription access.
-* Analytics - Find out what your readers want. See graphs your sales, user funnels, and viewers, export your data to csv for further analysis.
-* Customize - Easy, customizable, and flexible integration. Create a premium purchase experience that works with your brand.
-* Secure and Easy Payment - We focus on security and privacy in handling payments, fraud, customer service and account management.
+* Subscriptions/Membership - Sell automatically recurring monthly and yearly subscription access. We handle the payment processing with no merchant account required.
+* Micropayments - You can sell access to individual articles for as little as 5 cents. We handle the payment processing with no merchant account required.
+* Analytics - Find out what your readers want. See graphs of your sales, user funnels, and viewers, and export your data to csv for further analysis.
+* Customize - Easy, customizable, and flexible integration. Create a premium purchase experience that matches your brand.
+* Secure and Easy Payment - We focus on security and privacy in handling payments, preventing fraud, customer service, and account management.
 
 ####Services
 #####Subscriptions
 >Give users access to all the premium content on your site with monthly and yearly subscriptions.
 
 #####Micropayments
->Sell access to individual pieces of content for $0.05-$1.00.  Micropayments help you drastically increase the number of paying users on your site, and they allow you to get more of your engaged viewers who are not quite ready to subscribe to still access content and enjoy your site.
+>Sell access to individual pieces of content for $0.05-$1.00. Micropayments drastically increase the number of paying users on your site, since they attract more of your engaged viewers who are not quite ready to subscribe, but still want to access your premium content to fully enjoy your site.
 
 #####Micropayment Wallet
-CoinTent uses a digital wallet to make micropayments easy. The wallet provides:
-
-* Easy, 1-click purchases for your consumers
-* Specialize in selling content from $0.05-$1.00
-* Consumers fund their wallet up front which helps lower credit card fees
-* Consumers are more likely to make multiple purchases versus one off payments
+>CoinTent uses a digital wallet to make micropayments easy. The wallet provides:
+* Optimized, 1-click purchases for your consumers
+* Lower credit card fees since consumers fund their wallet upfront
+* Incentive for consumers to make multiple purchases versus a one-off payment
 
 
 = Examples =
-Micropayments:
-[http://techpinions.com](http://techpinions.com/how-microsoft-could-hijack-android/28587)
+* Micropayments:
+[techpinions.com](http://techpinions.com/how-microsoft-could-hijack-android/28587)
 
-Subscriptions + Micropayments:
-[http://donnadubinsky.com](http://donnadubinsky.com/2014/01/28/a-kodak-moment/)
+* Subscriptions + Micropayments:
+[razzball.com](http://razzball.com/streamers/)
 
-For more on CoinTent, visit [cointent.com](https://cointent.com)
+For more information, visit [cointent.com](https://cointent.com)
 
-Features:
-Payment Processors: braintree, stripe, paypal
-We provide: Monthly and Yearly Subscriptions, Paywalls, Memberships, Micropayments for individual pieces of content, a digital wallet shared across the web to make purchasing your content easier.
+= Features =
+Payment Processors: Braintree, Stripe, Paypal
+
+We provide: Monthly and Yearly Subscriptions, Paywalls, Memberships, Micropayments for individual pieces of content, a digital wallet shared across the web to make purchasing content easier.
 
 == Installation ==
- CoinTent is easy to setup!  Starting selling content in minutes.
+ CoinTent is easy to setup!  Start selling content in minutes.
 
-1. Sign up with CoinTent [here](https://cointent.com/p/signup)
-2. Install the plugin to the wp-content/plugins folder
-3. Add your publisher ID from [here](cointent.com/p/account/) to the Wordpress admin panel in the CoinTent section
-4. Pick a category to gate
-5. You are done! Check out your new paywall.
+1. Sign up for a free account at [Cointent.com](https://cointent.com/p/signup)
+2. Login to your Wordpress dashboard and install the CoinTent plugin
+3. Add your publisher ID (found in your CoinTent account) to the CoinTent plugin settings
+4. Select a category to treat as premium content
+5. Save your changes and you’re done! Check out your new paywall by visiting the premium category on your site
 	
-For more options and customizations checkout the full [documentation here](https://cointent.com/docs/wordpress)
+For more options and customizations checkout the full [documentation at Cointent.com](https://cointent.com/docs/wordpress)
 	
 == Screenshots ==
 
-1. The CoinTent widget integrated into a blog check out at <a href="http://donnadubinsky.com/2014/01/28/a-kodak-moment/">http://donnadubinsky.com</a> to see it in action
+1. The CoinTent widget integrated into a blog check out <a href="http://razzball.com/steamers/">razzball.com</a> to see it in action
 
-2. The CoinTent setup account page. This is how the user creates an account to pay for content via day passes or micropayments.
+2. The CoinTent setup account page. This is how a consumer creates an account to pay for content via day passes or micropayments.
 
 3. The CoinTent subscription sign-up page. This is how the user creates an account to subscribe to your website.
 
@@ -74,53 +74,56 @@ For more options and customizations checkout the full [documentation here](https
 == Frequently Asked Questions ==
 
 = What is CoinTent? =
-CoinTent is a digital wallet service that allows publisher to sell content how they want to. Publisher can select to sell via subscriptions, limited-access passes, or a la carte for prices as low as $0.05
+CoinTent is a digital wallet service that allows publisher to sell content the way they want to. Publisher can select to sell via subscriptions, limited-access passes, or a la carte for prices as low as $0.05.
 
 = How does CoinTent work? =
-Publishers integrate the CoinTent plugin and determine at what price and how they want to sell their content.  This displays the button that allows users to pay for content.  To purchase content, end consumers with an account can purchase content with one click.  End consumers without an account can sign-up for an account and fund their wallet while staying on your website, and then continue to purchase content.
+Publishers install the CoinTent plugin and determine the content they’d like to sell, and the  price they’d like to charge. The plugin blocks access to the content, and displays a button that allows users to pay for the content. To purchase content, consumers with an account can purchase content with one click. Consumers without an account can sign-up for an account and fund their wallet while staying on your website, and then continue to purchase content in a fluid user experience.
 
 = What does the plugin handle? =
 The plugin adds a paywall to the premium posts. Clicking the purchase button in the paywall handles the user setting up an account, funding that account, buying the article and saving their purchase history.
 
 = How do I integrate the CoinTent plugin? =
-Check out our [step-by-step guide](https://cointent.com/docs/wordpress) or email <support@cointent.com> for more help
+Check out our [step-by-step guide](https://cointent.com/docs/wordpress) or email <support@cointent.com> for more help.
 
 = What content can I sell? =
-You can sell any content (articles/blog posts/videos etc.).  Just wrap the content you want to hide in the cointent_lockedcontent shortcode. Any content before the more tag will. More infoormation is available [here](https://cointent.com/docs/wordpress)
+You can sell any content: articles, blog posts, videos, etc.  Just wrap the content you want to hide in the "cointent_lockedcontent" shortcode and any content before the more tag will be paywalled. More information is available in our [documentation](https://cointent.com/docs/wordpress).
 
-= How do I make an article available for sale. =
-You can either pick a Wordpress category and make all of that category for sale or you can add the CoinTent shortcode to the article you want to sell. More infoormation is available [here](https://cointent.com/docs/wordpress)
+= How do I make an article available for sale? =
+There are two ways to designate an article for sale. You can either pick a WordPress category and make all posts in that category for sale, or you can add the CoinTent shortcode to the individual article you want to sell. More information is available in our [documentation](https://cointent.com/docs/wordpress).
 
 = Why do I have to agree to tracking? =
-Tracking help us improve the reader's experience. We relay this data back to you so you can test different prices and see what content people are most willing to pay for. It is anonymous, we are looking at aggregate numbers not individual users. We track views of posts, clicks on our purchase buttons, and click on user's logging in. We use that tracking to compare against the number of readers that sign up for our service, and we use that information to guide our choices on what appears in the box. We also use this tracking to make sure we don't have any bugs in the product, changes in the numbers help us see bugs even before they are reported to get them fixed ASAP.  We don't use this data to sell to anyone else, it is used to make our product the best it can be and to help your business.
+Tracking is core to reporting your financial success.  Data from your individual visitors is anonymous and aggregated, yet helps you test different prices and see what content people are most willing to pay for. We track views of posts, clicks on our purchase buttons, and click on user's logging in. We use that data to compare against the number of readers that sign up for our service, and to guide our choices on the appropriate presentation of the checkout process. We also use this data to make sure we do not have any bugs in the product. Changes in the numbers help us see bugs even before they are reported so we can fix them before they affect many users. We don't use this data to sell to anyone else, it is used to make our product the best it can be and to help your business.
 
 = Can I choose the price of each of my articles? =
-Yes the prices are defaulted to $0.25 and can be changed on your [account page](https://cointent.com/p/account).
+Yes, the prices are defaulted to $0.25 and can be changed in your [account dashboard](https://cointent.com/p/account).
 
 = Do you provide analytics? =
-Yes. You can login at to your [publisher account](https://cointent.com/p/account) to see your revenue, in total, by top articles, user funnels. We are conintually adding more analytics and data visualizations. 
+Yes, you can login at to your [publisher account dashboard](https://cointent.com/p/account) to see your revenue, in total, by top articles, user funnels. We are continuously adding more analytics and data visualizations.
 
 = Do I need a CoinTent Publisher Account? =
-Yes, we need to know how to pay you! Also in your account you can set prices for your articles, monitor your sales, and contact you for your pay information. A publisher account also allows us to keep you informed of our terms of service. You can signup [here](https://cointent.com/p/signup)
-
- they default to $0.25 if you haven't picked a price. Here you can also view how much money you are making each day.  You can signup here https://cointent.com/p/signup
+Yes, your CoinTent publisher account serves as your dashboard for setting prices for your articles, monitoring your sales, and requesting a payment of your balance.  A publisher account also allows us to keep you informed of our Terms of Service. You can sign up on [CoinTent.com](https://cointent.com/p/signup).
 
 = What is the cost structure? =
-Publishers keep 80% of all money spent on their content.  The remaining percentage largely covers payment fees (which are often $0.30 +3% of the amount a user fills their wallet with), fraud protection, and security.
+Publishers keep 80% of all money spent on their content.  The remaining percentage largely covers payment fees (which are often $0.30 + 3% of the amount a consumer puts in their wallet), fraud protection, and security. Please refer to our [pricing page](https://cointent.com/pricing) for more details.
 
 = How do I get paid? =
-To receive payment for your sales, be sure to completely fill out your contact information on your account page.  When your information is properly filled out, we will pay your account monthly by check as long as you have accumulated a minimum of $10.  If you have any questions on payments, please contact <publishers@cointent.com>.
+To receive payment for your sales, be sure to completely fill out your contact information on your account page. When your information is properly filled out, we will pay your account monthly by check as long as you have accumulated a minimum of $10. If you have any questions on payments, please contact <publishers@cointent.com>.
 
 = What payment methods does it allow? =
 We currently allow users to fill their wallets with all major credit cards and PayPal.
 
 = Do my readers need to create a CoinTent Account? =
-Yes. This way we can remember which articles your readers have purchased, and bill them for subscriptions. The wallet also allows you to set prices lower than a $1. They can signup and manage their account [here](https://cointent.com/u/signup)
+Yes, this way we can remember which articles your readers have purchased, and bill them for subscriptions. The wallet also allows you to set prices lower than a $1. To receive payment for your sales, be sure to completely fill out your contact information on your account page. When your information is properly filled out, we will pay your account monthly by check as long as you have accumulated a minimum of $10. If you have any questions on payments, please contact <publishers@cointent.com>.
 
-= I found a bug in the plugin. =
-Please email us at <support@cointent.com> we will fix it right away. Thanks for your help!
+= Have any questions or issues? =
+Please email us at <support@cointent.com>. We'd love to hear from you and help you get setup.
 
 == Changelog ==
+= 1.4.0 =
+* Updated readme
+* Changed plugin to singleton pattern,
+* fixed issue with tracking on the home page not adding properly, was attached to wrong hook.p\
+
 = 1.3.9 =
 * Roll back of excerpt changes in 1.3.8 that were not good.
 
