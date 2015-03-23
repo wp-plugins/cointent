@@ -64,6 +64,8 @@ function cointent_validate_settings($input) {
 	$prevalidate = (string)trim($input['widget_wrapper_prepurchase']);
 	if(preg_match($pregString, $prevalidate)) {
 		$result['widget_wrapper_prepurchase'] = $prevalidate;
+	} else {
+		$error = "Widget wrapper contains characters that are not allowed please use only alphanumerics.";
 	}
 
 	$prevalidate = (string)trim($input['widget_wrapper_postpurchase']);
@@ -72,30 +74,35 @@ function cointent_validate_settings($input) {
 	}
 
 	/*TITLES */
-	$prevalidate = (string)trim($input['widget_title']);
-	if(preg_match($pregString, $prevalidate)) {
-		$result['widget_title'] =  $prevalidate;
+	if (strpos($input['widget_title'],'"') !== false) {
+		$error = 'Widget title cannot contain double quotes, please remove them or replace them with single quotes.';
+	} else {
+		$result['widget_title'] = $input['widget_title'];
 	}
 
-	$prevalidate = (string)trim($input['widget_subtitle']);
-	if(true || preg_match($pregString, $prevalidate)) {
-		$result['widget_subtitle'] = $prevalidate;
+	if (strpos($input['widget_subtitle'],'"') !== false) {
+		$error = 'Widget Subtitle cannot contain double quotes, please remove them or replace them with single quotes.';
+	} else {
+		$result['widget_subtitle'] = $input['widget_subtitle'];
 	}
-
-	$prevalidate = (string)trim($input['widget_post_purchase_title']);
-	if(preg_match($pregString, $prevalidate)) {
-		$result['widget_post_purchase_title'] = $prevalidate;
+	if (strpos($input['widget_post_purchase_title'],'"') !== false) {
+		$error = 'Widget post purchase title cannot contain double quotes, please remove them or replace them with single quotes.';
+	} else {
+		$result['widget_post_purchase_title'] = $input['widget_post_purchase_title'];
 	}
-
-	$prevalidate = (string)trim($input['widget_post_purchase_subtitle']);
-	if(true || preg_match($pregString, $prevalidate)) {
-		$result['widget_post_purchase_subtitle'] = $prevalidate;
+	if (strpos($input['widget_post_purchase_subtitle'],'"') !== false) {
+		$error = 'Widget Post purchase subtitle cannot contain double quotes, please remove them or replace them with single quotes.';
+	} else {
+		$result['widget_post_purchase_subtitle'] = $input['widget_post_purchase_subtitle'];
 	}
 
 	$prevalidate = (string)trim($input['widget_additional_css']);
 	if(preg_match($pregString, $prevalidate)) {
 		$result['widget_additional_css'] = $prevalidate;
+	} else {
+		$error = "CSS class contains characters that are not allowed please use only alphanumerics.";
 	}
 
+	$result['error'] = $error;
 	return $result;
 }

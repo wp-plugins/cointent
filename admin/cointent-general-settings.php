@@ -20,6 +20,9 @@ function cointent_general_settings() {
 			<div id="message" class="updated fade"><p><strong><?php _e('Options saved.', 'cointent') ?></strong></p></div>
 		<?php endif; ?>
 
+		<?php if( !empty($options['error'])) : ?>
+			<div class="error_box">ERROR, a field was not saved : <?php echo $options['error']?></div>
+		<?php endif; ?>
 
 		<div class="intro">
 			<?php if( empty($options['intro_dismissed']) || $options['intro_dismissed'] !== 1) : ?>
@@ -261,7 +264,7 @@ function cointent_general_settings() {
 											</td>
 											<td>
 												<h2>Example</h2>
-												<p>[cointent_lockedcontent] ALL content put between the shortcode tags will be behind a paywall. [cointent_lockedcontent] Content outside will not be locked.</p>
+												<p>[cointent_lockedcontent] ALL content put between the shortcode tags will be behind a paywall. [/cointent_lockedcontent] Content outside will not be locked.</p>
 											</td>
 										</tr>
 										<tr>
