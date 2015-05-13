@@ -385,15 +385,18 @@ function cointent_general_settings() {
 											<td>
 												<ul>
 													<li>
-														<input type="radio" id="ct_reload_partial_page" name="Cointent[reload_full_page]" value="0" <?php if ($options['reload_full_page'] ==  false ) { echo "checked"; }?>/><label for="ct_reload_partial_page">&nbsp;<?php _e( 'Partial' ); ?></label><br>
+														<input type="radio" id="ct_reload_partial_page" name="Cointent[reload_full_page]" value="0" <?php if ($options['reload_full_page'] ==  0 ) { echo "checked"; }?>/><label for="ct_reload_partial_page">&nbsp;<?php _e( 'Partial' ); ?></label><br>
 													</li>
 													<li>
-														<input type="radio" id="ct_reload_full_page" name="Cointent[reload_full_page]" value="1" <?php if ($options['reload_full_page'] ==  true ) { echo "checked"; }?>/><label for="ct_reload_full_page">&nbsp;<?php _e( 'Full' ); ?></label><br>
+														<input type="radio" id="ct_reload_inplace" name="Cointent[reload_full_page]" value="1" <?php if ($options['reload_full_page'] ==  1 ) { echo "checked"; }?>/><label for="ct_reload_inplace">&nbsp;<?php _e( 'In place page reload' ); ?></label><br>
+													</li>
+													<li>
+														<input type="radio" id="ct_reload_full_page" name="Cointent[reload_full_page]" value="2" <?php if ($options['reload_full_page'] ==  2 ) { echo "checked"; }?>/><label for="ct_reload_full_page">&nbsp;<?php _e( 'Full page refresh' ); ?></label><br>
 													</li>
 												</ul>
 											</td>
 											<td>
-												<p>If you are just locking text we suggest partial page reload. If you have interactive content, you may need to do a full page reload to make sure the correct javascript files are included.</p>
+												<p>If you are just locking text we suggest partial page reload. If you have interactive content, you may need to do a full page reload, or in place page reload to make sure the correct javascript files are included.</p>
 											</td>
 										</tr>
 										<tr>

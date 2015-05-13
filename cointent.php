@@ -3,7 +3,7 @@
  * Plugin Name: CoinTent
  * Plugin URI: http://cointent.com
  * Description: CoinTent let’s you sell individual pieces of content for small amounts ($0.05-$1.00).  You choose what content to sell and how to sell it. We handle the rest.
- * Version: 1.4.1
+ * Version: 1.4.2
  * Author: CoinTent, Inc.
  * License: GPL2
  */
@@ -79,7 +79,7 @@ if (!class_exists('cointent_class')) {
 				'widget_post_purchase_title' => 'Thanks you!',
 				'widget_post_purchase_subtitle' => '',
 				'view_type' => 'condensed',
-				'reload_full_page' => false,
+				'reload_full_page' => 0,
 				'widget_additional_css' => ''
 			);
 			$options = get_option( 'Cointent', $default_options );
@@ -135,13 +135,13 @@ if (!class_exists('cointent_class')) {
 			// Do not show the extra text
 
 
-			if ((!isset($_GET['email']) && !isset($_GET['uid'])) || !isset($_GET['token']) || !isset($_GET['time'])) {
+			if ((!isset($_REQUEST['email']) && !isset($_REQUEST['uid'])) || !isset($_REQUEST['token']) || !isset($_REQUEST['time'])) {
 				// Not enough info to do check
 				$has_cointent_access = false;
 			} else {
-				$email = isset($_GET['email']) ? $_GET['email'] : '';
-				$uid = isset($_GET['uid']) ?  $_GET['uid'] : '';
-				$has_cointent_access = $this->cointent_has_access($email, $uid, $_GET['token'], $_GET['time']);
+				$email = isset($_REQUEST['email']) ? $_REQUEST['email'] : '';
+				$uid = isset($_REQUEST['uid']) ?  $_REQUEST['uid'] : '';
+				$has_cointent_access = $this->cointent_has_access($email, $uid, $_REQUEST['token'], $_REQUEST['time']);
 			}
 
 			if ($has_cointent_access) {
@@ -177,7 +177,7 @@ if (!class_exists('cointent_class')) {
 
 			// If you have been passed authentication information check to see if the user has
 			// purchased the content, if you don't just check to see if the content is gated by cointent or not
-			if( (!isset($_GET['email']) && !isset($_GET['uid'])) || !isset($_GET['token']) || !isset($_GET['time'])) {
+			if( (!isset($_REQUEST['email']) && !isset($_REQUEST['uid'])) || !isset($_REQUEST['token']) || !isset($_REQUEST['time'])) {
 				$is_gated = $this->cointent_is_content_gated();
 				// If not gated, don't change the content and return
 				if (!$is_gated) {
@@ -185,9 +185,9 @@ if (!class_exists('cointent_class')) {
 				}
 				$has_cointent_access = !$is_gated;
 			} else {
-				$email = isset($_GET['email']) ? $_GET['email'] : '';
-				$uid = isset($_GET['uid']) ?  $_GET['uid'] : '';
-				$has_cointent_access = $this->cointent_has_access($email, $uid, $_GET['token'], $_GET['time']);
+				$email = isset($_REQUEST['email']) ? $_REQUEST['email'] : '';
+				$uid = isset($_REQUEST['uid']) ?  $_REQUEST['uid'] : '';
+				$has_cointent_access = $this->cointent_has_access($email, $uid, $_REQUEST['token'], $_REQUEST['time']);
 			}
 
 			// If the user has access or the script has already been loaded, don't load the script again
@@ -250,6 +250,7 @@ if (!class_exists('cointent_class')) {
 
 			// Get all of the information from the shortcode
 			//   article title 					-> Title of the article, if doesn't exist use post title
+			//   article_labels					-> Default labels to be added to the CT system
 			//   title  						-> Title to display on the widget BEFORE purchase
 			//   subtitle 						-> Message below the title to display on the widget BEFORE purchase
 			//   post_purchase_title  			-> Title to display on the widget AFTER purchase
@@ -262,6 +263,7 @@ if (!class_exists('cointent_class')) {
 			extract( shortcode_atts( array(
 				'media_type' => 'text',
 				'article_title' => '',
+				'article_labels' => '',
 				'title' => '',
 				'subtitle' => '',
 				'post_purchase_title' => '',
@@ -275,7 +277,7 @@ if (!class_exists('cointent_class')) {
 				'video_height' => '360',
 				'widget_additional_css'=>'',
 				'video_poster' => 'https://kconnect.dev.cointent.com/images/default_poster.png',
-				'reload_full_page' => false
+				'reload_full_page' => 0,
 			), $atts, 'cointent_lockedcontent' ));
 
 			// If we don't have an article title use the one from the post
@@ -287,7 +289,7 @@ if (!class_exists('cointent_class')) {
 			$additionalCss = $additionalCss ? $additionalCss : $options['widget_additional_css'];
 			$title = $title ? $title : $options['widget_title'];
 			$subtitle = $subtitle ? $subtitle : $options['widget_subtitle'];
-			$reload_full_page = $options['reload_full_page'] ? true : false;
+			$reload_full_page = $options['reload_full_page'];
 			$post_purchase_title = $post_purchase_title ? $post_purchase_title : $options['widget_post_purchase_title'];
 			$post_purchase_subtitle = $post_purchase_subtitle ? $post_purchase_subtitle : $options['widget_post_purchase_subtitle'];
 
@@ -308,6 +310,7 @@ if (!class_exists('cointent_class')) {
 			// Data fields to aid in the creation of the widget
 			$dataFields = 'data-publisher-id="'.$publisher_id.'" data-article-id="'.$post_id.'"'.
 				'data-article-title="'.$article_title.'"'.
+				'data-article-labels="'.$article_labels.'"'.
 				'data-title="'.$title.'"'.
 				'data-url="'.get_permalink($post_id).'"'.
 				'data-subtitle="'.$subtitle.'"'.
@@ -338,6 +341,21 @@ if (!class_exists('cointent_class')) {
 					if(!is_front_page()) {
 						$data['articleId'] = $post_id;
 					}
+					wp_localize_script('main-cointent-js','cointent_tracking_data', $data);
+					add_action('wp_print_scripts', array(&$this, "cointent_dequeue_tracking"));
+					$this->cointent_dequeue_tracking();
+				}
+			} else if (isset($_REQUEST['fullReload'])) {
+				wp_enqueue_script('main-cointent-js');
+
+				$tracking_active = $options['cointent_tracking'];
+				if ($tracking_active) {
+					$data = array('publisherId'=>$publisher_id, 'gated'=>true);
+
+					if(!is_front_page()) {
+						$data['articleId'] = $post_id;
+					}
+					$data['fullReload'] = true;
 					wp_localize_script('main-cointent-js','cointent_tracking_data', $data);
 					add_action('wp_print_scripts', array(&$this, "cointent_dequeue_tracking"));
 					$this->cointent_dequeue_tracking();
@@ -517,16 +535,17 @@ if (!class_exists('cointent_class')) {
 
 			$has_access = false;
 			$isGated = true;
-			if( (!isset($_GET['email']) && !isset($_GET['uid'])) || !isset($_GET['token']) || !isset($_GET['time'])) {
+			if( (!isset($_REQUEST['email']) && !isset($_REQUEST['uid'])) || !isset($_REQUEST['token']) || !isset($_REQUEST['time'])) {
 				// Not enough info to do check
 				$isGated = $this->cointent_is_content_gated();
 				if (!$isGated) {
 					return $content;
 				}
 			} else {
-				$email = isset($_GET['email']) ? $_GET['email'] : '';
-				$uid = isset($_GET['uid']) ?  $_GET['uid'] : '';
-				$has_access = $this->cointent_has_access($email, $uid, $_GET['token'], $_GET['time']);
+				$email = isset($_REQUEST['email']) ? $_REQUEST['email'] : '';
+				$uid = isset($_REQUEST['uid']) ?  $_REQUEST['uid'] : '';
+				$isGated = $this->cointent_is_content_gated();
+				$has_access = $this->cointent_has_access($email, $uid, $_REQUEST['token'], $_REQUEST['time']);
 			}
 
 			$options = get_option('Cointent');
@@ -549,7 +568,7 @@ if (!class_exists('cointent_class')) {
 			/*********** End TP ONLY SECTION *************/
 
 			/********* THIS SECTION WILL NOT WORK WITH TECHPINION, IT DOES THE LOCKING TP depends on another plugin to do locking *********/
-			if ($has_access) {
+			if ($has_access && $isGated) {
 
 				//$pos = strpos( $content, 'cointent_lockedcontent') ;
 				if (!$this->is_shortcode_present($content)) {

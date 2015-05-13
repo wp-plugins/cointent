@@ -102,7 +102,8 @@ function cointent_validate_settings($input) {
 	} else {
 		$error = "CSS class contains characters that are not allowed please use only alphanumerics.";
 	}
-
-	$result['error'] = $error;
+	if(isset($error)) {
+		$result['error'] = $error;
+	}
 	return $result;
 }
