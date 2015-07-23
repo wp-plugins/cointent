@@ -1,10 +1,10 @@
 === CoinTent ===
 Contributors: cointent
 Tags: access-control, braintree, content, content monetization, ecommerce, earn money, make money, micropayments, monetize, monetization, paywall, pay per view, payment, payments, paywall, premium, premium content,restrict access, sell, sell content, sell digital goods,stripe, widget
-Version: 1.4.2
+Version: 1.4.3
 Requires at least: 3.8
-Tested up to: 4.1
-Stable tag: 1.4.2
+Tested up to: 4.2.3
+Stable tag: 1.4.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -119,6 +119,9 @@ Yes, this way we can remember which articles your readers have purchased, and bi
 Please email us at <support@cointent.com>. We'd love to hear from you and help you get setup.
 
 == Changelog ==
+= 1.4.3 =
+* Fixing plugin conflicts. Previews weren't displaying changes other plugins had made.
+
 = 1.4.2 =
 * Adding the ability to put labels on shortcodes (so you don't have to set it
 * New images for welcome banner
