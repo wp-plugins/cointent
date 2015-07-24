@@ -178,7 +178,7 @@ if (!class_exists('cointent_class')) {
 			// If you have been passed authentication information check to see if the user has
 			// purchased the content, if you don't just check to see if the content is gated by cointent or not
 			if( (!isset($_REQUEST['email']) && !isset($_REQUEST['uid'])) || !isset($_REQUEST['token']) || !isset($_REQUEST['time'])) {
-				$is_gated = $this->cointent_is_content_gated($content);
+				$is_gated = $this->cointent_is_content_gated();
 				// If not gated, don't change the content and return
 				if (!$is_gated) {
 					return $content;
@@ -478,7 +478,7 @@ if (!class_exists('cointent_class')) {
 		 *
 		 * @return boolean True if the content is gate, False if it is not
 		 */
-		function cointent_is_content_gated ($content = null) {
+		function cointent_is_content_gated () {
 			global $post;
 			$mypost = $post;
 			$is_gated = false;
@@ -520,12 +520,6 @@ if (!class_exists('cointent_class')) {
 					}
 				}
 			}
-			// IF we are using a direct shortcode, no matter if it's in the post or not, it is gated
-			// Example, they are using a template and they want to add the do_shortcode function on their own
-			// Example, they want our shortcode in another plugin
-			if (!empty($content)) {
-				$is_gated = true;
-			}
 			return $is_gated;
 		}
 
@@ -535,7 +529,7 @@ if (!class_exists('cointent_class')) {
 		 * @param  string $content [description]
 		 * @return void         [description]
 		 */
-		function cointent_determine_shortcode_status()
+		function cointent_determine_shortcode_status($content)
 		{
 			global $post;
 
