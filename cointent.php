@@ -3,7 +3,7 @@
  * Plugin Name: CoinTent
  * Plugin URI: http://cointent.com
  * Description: CoinTent let’s you sell subscriptions and individual pieces of content for small amounts ($0.05-$1.00). You choose what content to sell and how to sell it. We handle the rest.
- * Version: 1.4.6
+ * Version: 1.4.7
  * Author: CoinTent, Inc.
  * License: GPL2
  */
@@ -178,7 +178,7 @@ if (!class_exists('cointent_class')) {
 			// If you have been passed authentication information check to see if the user has
 			// purchased the content, if you don't just check to see if the content is gated by cointent or not
 			if( (!isset($_REQUEST['email']) && !isset($_REQUEST['uid'])) || !isset($_REQUEST['token']) || !isset($_REQUEST['time'])) {
-				$is_gated = $this->cointent_is_content_gated();
+				$is_gated = $this->cointent_is_content_gated($content);
 				// If not gated, don't change the content and return
 				if (!$is_gated) {
 					return $content;
@@ -478,7 +478,7 @@ if (!class_exists('cointent_class')) {
 		 *
 		 * @return boolean True if the content is gate, False if it is not
 		 */
-		function cointent_is_content_gated () {
+		function cointent_is_content_gated ($content=null) {
 			global $post;
 			$mypost = $post;
 			$is_gated = false;
@@ -497,6 +497,9 @@ if (!class_exists('cointent_class')) {
 				return true;
 			}
 
+			if ($content !== null) {
+				return true;
+			}
 			//for these post types, we want to check the parent
 			if ($mypost->post_type == "attachment" || $mypost->post_type == "revision") {
 				$mypost = get_post($mypost->post_parent);
@@ -581,15 +584,15 @@ if (!class_exists('cointent_class')) {
 			else if ($isGated) {
 				if ($post->post_content)	{
 					//defined exerpt
-					$content = $this->cointent_define_preview();
+					$content = $this->cointent_define_preview($content);
 				}
 			}
 
 			return $content;
 		}
-		function cointent_define_preview() {
+
+		function cointent_define_preview($content) {
 			global $post;
-			$content = $post->post_content;
 
 			$options = get_option('Cointent');
 
@@ -603,7 +606,7 @@ if (!class_exists('cointent_class')) {
 				// Make short preview - pulled form wp_trim_excerpt
 				// IF THE MORE TAG EXISTS use that as breaking
 				$morestring = '<!--more-->';
-				$explode_content = explode( $morestring, $post->post_content );
+				$explode_content = explode( $morestring, $content );
 				if (isset($explode_content[0]) && isset($explode_content[1])) {
 					$content = $explode_content[0];
 				}
