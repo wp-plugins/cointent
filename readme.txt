@@ -1,10 +1,10 @@
 === CoinTent ===
 Contributors: cointent
 Tags: access-control, braintree, content, content monetization, ecommerce, earn money, make money, micropayments, monetize, monetization, paywall, pay per view, payment, payments, paywall, premium, premium content,restrict access, sell, sell content, sell digital goods,stripe, widget
-Version: 1.4.7
+Version: 1.4.9
 Requires at least: 3.8
 Tested up to: 4.2.3
-Stable tag: 1.4.7
+Stable tag: 1.4.9
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -42,7 +42,7 @@ CoinTent is the best way to drive revenue on your site through paid subscription
 * Subscriptions + Micropayments:
 [razzball.com](http://razzball.com/streamers/)
 
-For more information, visit [cointent.com](https://cointent.com)
+For more information, visit [cointent.com](https://cointent.com?utm_source=wordpress&utm_medium=plugin&utm_term=readme&utm_campaign=moreinfo)
 
 = Features =
 Payment Processors: Braintree, Stripe, Paypal
@@ -52,13 +52,13 @@ We provide: Monthly and Yearly Subscriptions, Paywalls, Memberships, Micropaymen
 == Installation ==
  CoinTent is easy to setup!  Start selling content in minutes.
 
-1. Sign up for a free account at [Cointent.com](https://cointent.com/p/signup)
+1. Sign up for a free account at [Cointent.com](https://cointent.com/p/signup?utm_source=wordpress&utm_medium=plugin&utm_term=readme&utm_campaign=installation)
 2. Login to your Wordpress dashboard and install the CoinTent plugin
 3. Add your publisher ID (found in your CoinTent account) to the CoinTent plugin settings
 4. Select a category to treat as premium content
 5. Save your changes and you’re done! Check out your new paywall by visiting the premium category on your site
 	
-For more options and customizations checkout the full [documentation at Cointent.com](https://cointent.com/docs/wordpress)
+For more options and customizations checkout the full [documentation at Cointent.com](https://cointent.com/docs/wordpress?utm_source=wordpress&utm_medium=plugin&utm_term=readme&utm_campaign=documentation)
 	
 == Screenshots ==
 
@@ -83,28 +83,28 @@ Publishers install the CoinTent plugin and determine the content they’d like t
 The plugin adds a paywall to the premium posts. Clicking the purchase button in the paywall handles the user setting up an account, funding that account, buying the article and saving their purchase history.
 
 = How do I integrate the CoinTent plugin? =
-Check out our [step-by-step guide](https://cointent.com/docs/wordpress) or email <support@cointent.com> for more help.
+Check out our [step-by-step guide](https://cointent.com/docs/wordpress?utm_source=wordpress&utm_medium=plugin&utm_term=readme&utm_campaign=documentation) or email <support@cointent.com> for more help.
 
 = What content can I sell? =
-You can sell any content: articles, blog posts, videos, etc.  Just wrap the content you want to hide in the "cointent_lockedcontent" shortcode and any content before the more tag will be paywalled. More information is available in our [documentation](https://cointent.com/docs/wordpress).
+You can sell any content: articles, blog posts, videos, etc.  Just wrap the content you want to hide in the "cointent_lockedcontent" shortcode and any content before the more tag will be paywalled. More information is available in our [documentation](https://cointent.com/docs/wordpress?utm_source=wordpress&utm_medium=plugin&utm_term=readme&utm_campaign=documentation).
 
 = How do I make an article available for sale? =
-There are two ways to designate an article for sale. You can either pick a WordPress category and make all posts in that category for sale, or you can add the CoinTent shortcode to the individual article you want to sell. More information is available in our [documentation](https://cointent.com/docs/wordpress).
+There are two ways to designate an article for sale. You can either pick a WordPress category and make all posts in that category for sale, or you can add the CoinTent shortcode to the individual article you want to sell. More information is available in our [documentation](https://cointent.com/docs/wordpress?utm_source=wordpress&utm_medium=plugin&utm_term=readme&utm_campaign=documentation).
 
 = Why do I have to agree to tracking? =
 Tracking is core to reporting your financial success.  Data from your individual visitors is anonymous and aggregated, yet helps you test different prices and see what content people are most willing to pay for. We track views of posts, clicks on our purchase buttons, and click on user's logging in. We use that data to compare against the number of readers that sign up for our service, and to guide our choices on the appropriate presentation of the checkout process. We also use this data to make sure we do not have any bugs in the product. Changes in the numbers help us see bugs even before they are reported so we can fix them before they affect many users. We don't use this data to sell to anyone else, it is used to make our product the best it can be and to help your business.
 
 = Can I choose the price of each of my articles? =
-Yes, the prices are defaulted to $0.25 and can be changed in your [account dashboard](https://cointent.com/p/account).
+Yes, the prices are defaulted to $0.25 and can be changed in your [account dashboard](https://cointent.com/p/account?utm_source=wordpress&utm_medium=plugin&utm_term=readme&utm_campaign=faq).
 
 = Do you provide analytics? =
-Yes, you can login at to your [publisher account dashboard](https://cointent.com/p/account) to see your revenue, in total, by top articles, user funnels. We are continuously adding more analytics and data visualizations.
+Yes, you can login at to your [publisher account dashboard](https://cointent.com/p/account?utm_source=wordpress&utm_medium=plugin&utm_term=readme&utm_campaign=faq) to see your revenue, in total, by top articles, user funnels. We are continuously adding more analytics and data visualizations.
 
 = Do I need a CoinTent Publisher Account? =
-Yes, your CoinTent publisher account serves as your dashboard for setting prices for your articles, monitoring your sales, and requesting a payment of your balance.  A publisher account also allows us to keep you informed of our Terms of Service. You can sign up on [CoinTent.com](https://cointent.com/p/signup).
+Yes, your CoinTent publisher account serves as your dashboard for setting prices for your articles, monitoring your sales, and requesting a payment of your balance.  A publisher account also allows us to keep you informed of our Terms of Service. You can sign up on [CoinTent.com](https://cointent.com/p/signup?utm_source=wordpress&utm_medium=plugin&utm_term=readme&utm_campaign=faq).
 
 = What is the cost structure? =
-Publishers keep 80% of all money spent on their content.  The remaining percentage largely covers payment fees (which are often $0.30 + 3% of the amount a consumer puts in their wallet), fraud protection, and security. Please refer to our [pricing page](https://cointent.com/pricing) for more details.
+For subscriptions there is a 5% transaction fee, %3 of that cover regular credit card fees and the rest is to cover our expenses. Micropayments payment fees (Single purchases below $2.00) have an additional flat fee of $0.30. Please refer to our [pricing page](https://cointent.com/pricing?utm_source=wordpress&utm_medium=plugin&utm_term=readme&utm_campaign=faq) for more details.
 
 = How do I get paid? =
 To receive payment for your sales, be sure to completely fill out your contact information on your account page. When your information is properly filled out, we will pay your account monthly by check as long as you have accumulated a minimum of $10. If you have any questions on payments, please contact <publishers@cointent.com>.
@@ -119,6 +119,18 @@ Yes, this way we can remember which articles your readers have purchased, and bi
 Please email us at <support@cointent.com>. We'd love to hear from you and help you get setup.
 
 == Changelog ==
+
+= 1.4.9 =
+* Add client only support for cointent_extras
+
+= 1.4.8 =
+* Update to UTM information
+* Adding client side locking option
+* Update of pricing terms in FAQ
+
+= 1.4.6 & 1.4.7 =
+* Version bumps for svn issues
+
 = 1.4.5 =
 * Rollback of fix
 

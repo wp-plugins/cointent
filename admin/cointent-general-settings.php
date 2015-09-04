@@ -399,6 +399,25 @@ function cointent_general_settings() {
 												<p>If you are just locking text we suggest partial page reload. If you have interactive content, you may need to do a full page reload, or in place page reload to make sure the correct javascript files are included.</p>
 											</td>
 										</tr>
+
+										<tr>
+											<td>
+												<h4>Client Side Locking</h4>
+											</td>
+											<td>
+												<ul>
+													<li>
+														<input type="radio" id="ct_client_side_locking_off" name="Cointent[client_side_locking]" value="0" <?php if ($options['client_side_locking'] ==  0 ) { echo "checked"; }?>/><label for="ct_client_side_locking_off">&nbsp;<?php _e( 'Off' ); ?></label><br>
+													</li>
+													<li>
+														<input type="radio" id="ct_client_side_locking_on" name="Cointent[client_side_locking]" value="1" <?php if ($options['client_side_locking'] ==  1 ) { echo "checked"; }?>/><label for="ct_client_side_locking_on">&nbsp;<?php _e( 'On' ); ?></label><br>
+													</li>
+												</ul>
+											</td>
+											<td>
+												<p>Client side locking vs Server side locking</p>
+											</td>
+										</tr>
 										<tr>
 											<td>
 												<h4><?php _e('Tracking') ?> </h4>

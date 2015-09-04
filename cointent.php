@@ -3,7 +3,7 @@
  * Plugin Name: CoinTent
  * Plugin URI: http://cointent.com
  * Description: CoinTent let’s you sell subscriptions and individual pieces of content for small amounts ($0.05-$1.00). You choose what content to sell and how to sell it. We handle the rest.
- * Version: 1.4.7
+ * Version: 1.4.9
  * Author: CoinTent, Inc.
  * License: GPL2
  */
@@ -70,6 +70,7 @@ if (!class_exists('cointent_class')) {
 				'preview_count' => 55,
 				'environment' => 'production',
 				'cointent_tracking' => false,
+				'intro_dismissed' => false,
 				'include_categories'=> array(),
 				'exclude_categories'=> array(),
 				'widget_wrapper_prepurchase' => '',
@@ -80,6 +81,7 @@ if (!class_exists('cointent_class')) {
 				'widget_post_purchase_subtitle' => '',
 				'view_type' => 'condensed',
 				'reload_full_page' => 0,
+				'client_side_locking' => 0,
 				'widget_additional_css' => ''
 			);
 			$options = get_option( 'Cointent', $default_options );
@@ -133,7 +135,8 @@ if (!class_exists('cointent_class')) {
 
 			// If user has access either by purchase or because the article is not gated by cointent
 			// Do not show the extra text
-
+			$options =  get_option('Cointent');
+			$post_id = get_the_ID();
 
 			if ((!isset($_REQUEST['email']) && !isset($_REQUEST['uid'])) || !isset($_REQUEST['token']) || !isset($_REQUEST['time'])) {
 				// Not enough info to do check
@@ -145,9 +148,18 @@ if (!class_exists('cointent_class')) {
 			}
 
 			if ($has_cointent_access) {
-				return '';
-			}
 
+				// If client side locking is on we always want to show all the content but we will want to hide the extras after unlocking
+
+				if ($options['client_side_locking']){
+					$content = '<span class="cointent_preview" id="cointent_preview_'.$post_id.'">'.$content.'</span>';
+				} else {
+					return "";
+				}
+			}
+			if ($options['client_side_locking']){
+				$content = '<span class="cointent_preview" id="cointent_preview_'.$post_id.'">'.$content.'</span>';
+			}
 			// Return the content wrapped in the cointent_extras
 			return wpautop(do_shortcode($content));
 		}
@@ -171,7 +183,8 @@ if (!class_exists('cointent_class')) {
 
 			// Content we want to display by expanding
 			$hidden_content = '';
-
+			$options =  get_option('Cointent');
+			$post_id = get_the_ID();
 			// If a user is running noscript or turned off javascript display a message that they can't do it
 			$no_script = $this->cointent_get_no_script_notice();
 
@@ -194,6 +207,8 @@ if (!class_exists('cointent_class')) {
 			if ( $has_cointent_access  && $content) {
 				// if there is content in the short code, hide it behind gating.
 				$hidden_content = $content;
+			} else if ($options['client_side_locking'] && strpos($content,'id="cointent_gated_'.$post_id.'"') === false) {
+				$hidden_content = '<div class="cointent_gated" id="cointent_gated_'.$post_id.'">'.$content.'</div>';
 			}
 			$widget_script = '';
 			if (strpos($content,'class="cointent-widget"')  === false) {
@@ -278,6 +293,7 @@ if (!class_exists('cointent_class')) {
 				'widget_additional_css'=>'',
 				'video_poster' => 'https://kconnect.dev.cointent.com/images/default_poster.png',
 				'reload_full_page' => 0,
+				'client_side_locking' => 0
 			), $atts, 'cointent_lockedcontent' ));
 
 			// If we don't have an article title use the one from the post
@@ -286,10 +302,12 @@ if (!class_exists('cointent_class')) {
 			}
 
 			$wrapperClass = $has_cointent_access ? $options['widget_wrapper_postpurchase'] : $options['widget_wrapper_prepurchase'];
-			$additionalCss = $additionalCss ? $additionalCss : $options['widget_additional_css'];
+			$additionalCss = $widget_additional_css ? $widget_additional_css : $options['widget_additional_css'];
 			$title = $title ? $title : $options['widget_title'];
 			$subtitle = $subtitle ? $subtitle : $options['widget_subtitle'];
 			$reload_full_page = $options['reload_full_page'];
+			// 0 - server side locking , 1 - client side locking
+			$client_side_locking = $options['client_side_locking'];
 			$post_purchase_title = $post_purchase_title ? $post_purchase_title : $options['widget_post_purchase_title'];
 			$post_purchase_subtitle = $post_purchase_subtitle ? $post_purchase_subtitle : $options['widget_post_purchase_subtitle'];
 
@@ -318,6 +336,7 @@ if (!class_exists('cointent_class')) {
 				'data-post-purchase-title="'.$post_purchase_title.'"'.
 				'data-view-type="'.$view_type.'"'.
 				'data-reload-full-page="'.$reload_full_page.'"'.
+				'data-client-side-locking="'.$client_side_locking.'"'.
 				'data-additional-css="'.$additionalCss.'"'.
 				'data-src="'.$image_url.'"';
 
@@ -595,7 +614,7 @@ if (!class_exists('cointent_class')) {
 			global $post;
 
 			$options = get_option('Cointent');
-
+			$shown_content = '';
 			$view_type = $options['view_type'];
 			$subtitle = $options['widget_subtitle'];
 			$title = $options['widget_title'];
@@ -606,9 +625,14 @@ if (!class_exists('cointent_class')) {
 				// Make short preview - pulled form wp_trim_excerpt
 				// IF THE MORE TAG EXISTS use that as breaking
 				$morestring = '<!--more-->';
+				if(strpos($content,$morestring)  === false) {
+					$morestring = '<span id="more-1"></span>';
+				}
 				$explode_content = explode( $morestring, $content );
+
 				if (isset($explode_content[0]) && isset($explode_content[1])) {
-					$content = $explode_content[0];
+					$shown_content = $explode_content[0];
+					$hidden_content = $explode_content[1];
 				}
 				// ELSE use default word count
 				else {
@@ -620,13 +644,16 @@ if (!class_exists('cointent_class')) {
 					$arraySlice = array_slice($wordAndPosition, $length, 1, true);
 					$lastWord = reset($arraySlice);
 					$indexToSplit = key($arraySlice) + strlen($lastWord);
-					$content = substr($content, 0, $indexToSplit+1 )."...";
+					$shown_content = substr($content, 0, $indexToSplit+1 );
+
+					$hidden_content = substr($content, $indexToSplit+1 );
 				}
 
-				$content = wpautop($content);
+				$content = wpautop($shown_content);
 				$content .= '[cointent_lockedcontent view_type="'.$view_type.'" title="'.$title.'" subtitle="'.$subtitle.'"'
 					.' post_purchase_title="'.$widget_post_purchase_title.'"'
 					.' post_purchase_subtitle="'.$widget_post_purchase_subtitle.'"]'
+					.$hidden_content
 					.'[/cointent_lockedcontent]';
 			} else {
 				error_log("There are duplicate plugins represented");

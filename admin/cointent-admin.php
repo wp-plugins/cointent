@@ -47,6 +47,7 @@ function cointent_validate_settings($input) {
 	$result['cointent_tracking'] = (bool)$input['cointent_tracking'];
 	$result['view_type'] = $input['view_type'];
 	$result['reload_full_page'] = intval($input['reload_full_page']);
+	$result['client_side_locking'] = intval($input['client_side_locking']);
 
 	if (isset($input['include_categories'])) {
 		$result['include_categories'] = $input['include_categories'];
@@ -61,17 +62,9 @@ function cointent_validate_settings($input) {
 	}
 	$pregString = '/^[a-z0-9A-Z\s<>\()!?._-]{0,140}$/i';
 	/*CSS classes */
-	$prevalidate = (string)trim($input['widget_wrapper_prepurchase']);
-	if(preg_match($pregString, $prevalidate)) {
-		$result['widget_wrapper_prepurchase'] = $prevalidate;
-	} else {
-		$error = "Widget wrapper contains characters that are not allowed please use only alphanumerics.";
-	}
 
-	$prevalidate = (string)trim($input['widget_wrapper_postpurchase']);
-	if(preg_match($pregString, $prevalidate)) {
-		$result['widget_wrapper_postpurchase'] = $prevalidate;
-	}
+	$result['widget_wrapper_prepurchase'] = '';
+	$result['widget_wrapper_postpurchase'] = '';
 
 	/*TITLES */
 	if (strpos($input['widget_title'],'"') !== false) {
