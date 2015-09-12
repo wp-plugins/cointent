@@ -3,7 +3,7 @@
  * Plugin Name: CoinTent
  * Plugin URI: http://cointent.com
  * Description: CoinTent let’s you sell subscriptions and individual pieces of content for small amounts ($0.05-$1.00). You choose what content to sell and how to sell it. We handle the rest.
- * Version: 1.4.9
+ * Version: 1.5.0
  * Author: CoinTent, Inc.
  * License: GPL2
  */
@@ -161,7 +161,7 @@ if (!class_exists('cointent_class')) {
 				$content = '<span class="cointent_preview" id="cointent_preview_'.$post_id.'">'.$content.'</span>';
 			}
 			// Return the content wrapped in the cointent_extras
-			return wpautop(do_shortcode($content));
+			return do_shortcode(($content));
 		}
 
 		/**
@@ -217,7 +217,7 @@ if (!class_exists('cointent_class')) {
 			}
 
 			$content = $hidden_content . $widget_script .$no_script;
-			return wpautop(do_shortcode($content));
+			return do_shortcode(($content));
 		}
 
 		/**
