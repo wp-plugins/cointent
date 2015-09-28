@@ -3,7 +3,7 @@
  * Plugin Name: CoinTent
  * Plugin URI: http://cointent.com
  * Description: CoinTent let’s you sell subscriptions and individual pieces of content for small amounts ($0.05-$1.00). You choose what content to sell and how to sell it. We handle the rest.
- * Version: 1.5.0
+ * Version: 1.5.1
  * Author: CoinTent, Inc.
  * License: GPL2
  */
@@ -77,11 +77,11 @@ if (!class_exists('cointent_class')) {
 				'widget_wrapper_postpurchase' => '',
 				'widget_title' => 'This content is available for purchase',
 				'widget_subtitle' => '',
-				'widget_post_purchase_title' => 'Thanks you!',
+				'widget_post_purchase_title' => 'Thank you!',
 				'widget_post_purchase_subtitle' => '',
 				'view_type' => 'condensed',
-				'reload_full_page' => 0,
-				'client_side_locking' => 0,
+				'reload_full_page' => 2,
+				'client_side_locking' => 1,
 				'widget_additional_css' => ''
 			);
 			$options = get_option( 'Cointent', $default_options );
@@ -175,8 +175,8 @@ if (!class_exists('cointent_class')) {
 			// Emergency shut off
 			// Displays a failure message instead of the widget
 			if (COINTENT_SHOW_FAILURE_MESSAGE) {
-				$message = '<div id="plugin_error_message"><p>CoinTent is currently under maintenance, but will be back up shortly.
-				  </br>If you have any questions or concerns please email support@cointent.com</p></div>';
+				$message = '<div id="plugin_error_message"> <p> CoinTent is currently under maintenance, but will be back up shortly.
+				  </br>If you have any questions or concerns please email support@cointent.com </p> </div>';
 
 				return do_shortcode($message);
 			}
@@ -208,7 +208,7 @@ if (!class_exists('cointent_class')) {
 				// if there is content in the short code, hide it behind gating.
 				$hidden_content = $content;
 			} else if ($options['client_side_locking'] && strpos($content,'id="cointent_gated_'.$post_id.'"') === false) {
-				$hidden_content = '<div class="cointent_gated" id="cointent_gated_'.$post_id.'">'.$content.'</div>';
+				$hidden_content = '<div hidden class="cointent_gated" id="cointent_gated_'.$post_id.'">'.$content.'</div>';
 			}
 			$widget_script = '';
 			if (strpos($content,'class="cointent-widget"')  === false) {
@@ -292,8 +292,8 @@ if (!class_exists('cointent_class')) {
 				'video_height' => '360',
 				'widget_additional_css'=>'',
 				'video_poster' => 'https://kconnect.dev.cointent.com/images/default_poster.png',
-				'reload_full_page' => 0,
-				'client_side_locking' => 0
+				'reload_full_page' => 2,
+				'client_side_locking' => 1
 			), $atts, 'cointent_lockedcontent' ));
 
 			// If we don't have an article title use the one from the post
@@ -321,10 +321,6 @@ if (!class_exists('cointent_class')) {
 
 			$view_type = $view_type ? $view_type : $options['view_type'];
 
-			if ($wrapperClass) {
-				$widget_script = '<div class="'.$wrapperClass.'">';
-			}
-
 			// Data fields to aid in the creation of the widget
 			$dataFields = 'data-publisher-id="'.$publisher_id.'" data-article-id="'.$post_id.'"'.
 				'data-article-title="'.$article_title.'"'.
@@ -350,6 +346,37 @@ if (!class_exists('cointent_class')) {
 			}
 			// If the user has access or the script has already been loaded, don't load the script again
 			$widget_script .= '<div class="cointent-'.$cssClazz.'" '.$dataFields.'></div>';
+			$this->addScripts($has_cointent_access, $post_id, $publisher_id);
+			$widget_script .= $this->addBacklink();
+			// Close the wrapper
+			if ($wrapperClass) {
+				$widget_script ='<div class="'.$wrapperClass.'">'. $widget_script . '</div>';
+			}
+
+			return $widget_script;
+		}
+
+		function cointent_dequeue_tracking () {
+			wp_dequeue_script( 'tracking-cointent-js' );
+			wp_deregister_script( 'tracking-cointent-js' );
+		}
+
+		function addBacklink() {
+			$backlink = '';
+			$backlink .= '<div style="position:relative; text-align:center;" class="cointent_messaging premessaging"><div class="spinner"></div><a class="cointent_logo on preload" target="_blank" href="https://cointent.com"><img class="powered_by_logo_widget_login" src="//connect.cointent.com/images/base64/powered_by_logo_widget_login.png" alt="Powered by CoinTent "></a></div>';
+			return $backlink;
+		}
+
+		/**
+		 * Manages which scripts should be included with the page and adds tracking information to it
+		 *
+		 * @param $has_cointent_access
+		 * @param $post_id
+		 * @param $publisher_id
+		 */
+		function addScripts($has_cointent_access, $post_id, $publisher_id) {
+			$options =  get_option('Cointent');
+
 			if (!$has_cointent_access && !isset($_GET['loadScript'])) {
 				wp_enqueue_script('main-cointent-js');
 
@@ -380,18 +407,6 @@ if (!class_exists('cointent_class')) {
 					$this->cointent_dequeue_tracking();
 				}
 			}
-
-			// Close the wrapper
-			if ($wrapperClass) {
-				$widget_script .= '</div>';
-			}
-
-			return $widget_script;
-		}
-
-		function cointent_dequeue_tracking () {
-			wp_dequeue_script( 'tracking-cointent-js' );
-			wp_deregister_script( 'tracking-cointent-js' );
 		}
 
 		/**
@@ -483,10 +498,15 @@ if (!class_exists('cointent_class')) {
 		 * @return bool True if the shortcode is present or has already been processed
 		 */
 		function is_shortcode_present ($content) {
+			global $post;
 			$sc = has_shortcode($content, 'cointent_lockedcontent');
 			$scString = strpos($content, '[cointent_lockedcontent') !== false;
 			$scProcessed = strpos($content,'class="cointent-widget"')  !== false;
-			return $sc || $scString || $scProcessed;
+
+			$postSc = has_shortcode($post, 'cointent_lockedcontent');
+			$postScString = strpos($post, '[cointent_lockedcontent') !== false;
+			$postScProcessed = strpos($post,'class="cointent-widget"')  !== false;
+			return $sc || $scString || $scProcessed || $postSc || $postScString || $postScProcessed;
 		}
 
 		/**
@@ -625,7 +645,7 @@ if (!class_exists('cointent_class')) {
 				// Make short preview - pulled form wp_trim_excerpt
 				// IF THE MORE TAG EXISTS use that as breaking
 				$morestring = '<!--more-->';
-				if(strpos($content,$morestring)  === false) {
+				if (strpos($content,$morestring)  === false) {
 					$morestring = '<span id="more-1"></span>';
 				}
 				$explode_content = explode( $morestring, $content );
