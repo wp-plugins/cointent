@@ -498,15 +498,11 @@ if (!class_exists('cointent_class')) {
 		 * @return bool True if the shortcode is present or has already been processed
 		 */
 		function is_shortcode_present ($content) {
-			global $post;
+
 			$sc = has_shortcode($content, 'cointent_lockedcontent');
 			$scString = strpos($content, '[cointent_lockedcontent') !== false;
 			$scProcessed = strpos($content,'class="cointent-widget"')  !== false;
-
-			$postSc = has_shortcode($post, 'cointent_lockedcontent');
-			$postScString = strpos($post, '[cointent_lockedcontent') !== false;
-			$postScProcessed = strpos($post,'class="cointent-widget"')  !== false;
-			return $sc || $scString || $scProcessed || $postSc || $postScString || $postScProcessed;
+			return $sc || $scString || $scProcessed;
 		}
 
 		/**
